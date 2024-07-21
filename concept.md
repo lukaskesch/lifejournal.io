@@ -1,3 +1,7 @@
+# Concept
+
+## Requirements
+
 - Define your areas where you want to improve
 - Log time spent on each areas
 - Run a live timer while working on each areas
@@ -6,11 +10,12 @@
 - Set checkin reminders
 - Set goals / milestones for each areas
 - Have a overview of your time spent on each areas per week, month, year
+- Give each log tags so you can later filter them by tags e.g. #learning, #git, #coding. This allows for a more detailed and dynamic overview of your time spent on each areas
 
-Inspiration
-
-- Measure in houndrets
-
-How to work
+## How to work
 
 - Recursive outline filling
+
+## Inspiration
+
+- Measure in houndrets
