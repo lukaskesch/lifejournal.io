@@ -20,10 +20,20 @@
 
 - Have a overview of your time spent on each tag per week, month, year
 
+## Open Questions
+
+- Sheet, App or Webapp?
+
+## Milestones
+
+- [x] Define the Concept
+- [ ] MVP: Googlesheets template
+
 ## How to work
 
-- Recursive outline filling
+- Recursive outline filling -> Forces you to not get lost in the details
 
 ## Inspiration
 
 - Measure in houndrets
+- 10.000 hours
