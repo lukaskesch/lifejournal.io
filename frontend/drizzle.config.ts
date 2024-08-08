@@ -1,15 +1,23 @@
 import { defineConfig } from "drizzle-kit";
 
+// Helper function to get environment variables
+function getEnvVar(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`Missing environment variable: ${name}`);
+  }
+  return value;
+}
+
 export default defineConfig({
   schema: "./drizzle/schema.ts",
   out: "./drizzle",
   dialect: "mysql",
-  driver: "mysql2",
   dbCredentials: {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+    host: getEnvVar("DB_HOST"),
+    user: getEnvVar("DB_USER"),
+    password: getEnvVar("DB_PASSWORD"),
+    database: getEnvVar("DB_NAME"),
   },
   verbose: true,
 });
