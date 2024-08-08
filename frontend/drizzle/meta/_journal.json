@@ -1,0 +1,13 @@
+{
+  "version": "6",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1723122367994,
+      "tag": "0000_amused_sunspot",
+      "breakpoints": true
+    }
+  ]
+}
