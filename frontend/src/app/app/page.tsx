@@ -1,6 +1,6 @@
 "use server";
 
-import { Button } from "@/components/ui/button";
+import LiveTimeLogger from "@/components/LiveTimeLogger";
 import { db } from "../../../db";
 import { users } from "../../../drizzle/schema";
 import { eq } from "drizzle-orm/expressions";
@@ -18,9 +18,9 @@ export default async function AppHome({}) {
   console.log("User from drizzle:", user);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-between p-24">
-      {user.email}
-      <Button>Click me</Button>
+    <div className="flex min-h-screen flex-col items-center justify-center p-24">
+      {/* {user.email} */}
+      <LiveTimeLogger />
     </div>
   );
 }
