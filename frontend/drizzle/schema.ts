@@ -1,9 +1,9 @@
-import { mysqlTable, mysqlSchema, AnyMySqlColumn, primaryKey, char, text, datetime, int, unique, varchar } from "drizzle-orm/mysql-core"
+import { mysqlTable, mysqlSchema, AnyMySqlColumn, foreignKey, primaryKey, char, text, datetime, int, unique, varchar } from "drizzle-orm/mysql-core"
 import { sql } from "drizzle-orm"
 
 export const user_tags = mysqlTable("user_tags", {
 	id: char("id", { length: 36 }).notNull(),
-	user_id: char("user_id", { length: 36 }).notNull(),
+	user_id: char("user_id", { length: 36 }).notNull().references(() => users.id),
 	name: text("name").notNull(),
 },
 (table) => {
@@ -14,7 +14,7 @@ export const user_tags = mysqlTable("user_tags", {
 
 export const user_time_log = mysqlTable("user_time_log", {
 	id: char("id", { length: 36 }).notNull(),
-	user_id: char("user_id", { length: 36 }).notNull(),
+	user_id: char("user_id", { length: 36 }).notNull().references(() => users.id),
 	start_time: datetime("start_time", { mode: 'string'}),
 	end_time: datetime("end_time", { mode: 'string'}),
 	duration_minutes: int("duration_minutes").notNull(),
@@ -28,8 +28,8 @@ export const user_time_log = mysqlTable("user_time_log", {
 
 export const user_time_log_has_tag = mysqlTable("user_time_log_has_tag", {
 	id: char("id", { length: 36 }).notNull(),
-	user_time_log_id: char("user_time_log_id", { length: 36 }).notNull(),
-	tag_id: char("tag_id", { length: 36 }).notNull(),
+	user_time_log_id: char("user_time_log_id", { length: 36 }).notNull().references(() => user_time_log.id),
+	tag_id: char("tag_id", { length: 36 }).notNull().references(() => user_tags.id),
 },
 (table) => {
 	return {
