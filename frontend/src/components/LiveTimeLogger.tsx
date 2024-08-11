@@ -1,18 +1,22 @@
 "use client";
 
+import { FocusLog } from "@/types/FocusLog";
 import { Button } from "./ui/button";
 import * as React from "react";
+import { toMySQLDatetime } from "../../db/db-utils";
 
-export default function LiveTimeLogger() {
+export default function LiveTimeLogger({
+  loggedTimeCallback,
+}: {
+  loggedTimeCallback: (FocusLog: FocusLog) => void;
+}) {
   const [startTime, setStartTime] = React.useState<Date>();
   const [durationInSeconds, setDurationInSeconds] = React.useState<number>(0);
   const [endTime, setEndTime] = React.useState<Date>();
 
   const interval = React.useRef<NodeJS.Timeout>();
 
-  const seconds = durationInSeconds % 60;
   const minutes = Math.floor(durationInSeconds / 60);
-  const hours = Math.floor(minutes / 60);
 
   function startInterval() {
     interval.current = setInterval(() => {
@@ -25,6 +29,13 @@ export default function LiveTimeLogger() {
       console.log("Clearing interval");
       clearInterval(interval.current);
     }
+    loggedTimeCallback({
+      user_id: "admin",
+      start_time: toMySQLDatetime(startTime || new Date()),
+      end_time: toMySQLDatetime(endTime || new Date()),
+      duration_minutes: minutes,
+      description: "",
+    });
   }
 
   function handleStartClick() {
