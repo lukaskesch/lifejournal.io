@@ -4,19 +4,29 @@ import { FocusLog } from "@/types/FocusLog";
 import { Button } from "./ui/button";
 import * as React from "react";
 import { toMySQLDatetime } from "../../db/db-utils";
+import { User, UserTags } from "../../drizzle/schema";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 export default function LiveTimeLogger({
+  user,
+  userTags,
   loggedTimeCallback,
+  addTagsToFocusLogCallback,
 }: {
-  loggedTimeCallback: (FocusLog: FocusLog) => void;
+  user: User;
+  userTags: UserTags[];
+  loggedTimeCallback: (FocusLog: FocusLog) => Promise<string>;
+  addTagsToFocusLogCallback: (focusLogId: string, tagIds: string[]) => void;
 }) {
   const [startTime, setStartTime] = React.useState<Date>();
   const [durationInSeconds, setDurationInSeconds] = React.useState<number>(0);
   const [endTime, setEndTime] = React.useState<Date>();
+  const [selectedTagsIds, setSelectedTagsIds] = React.useState<string[]>([]);
+  const [loggedFocusId, setLoggedFocusId] = React.useState<string>();
 
   const interval = React.useRef<NodeJS.Timeout>();
 
-  const minutes = Math.floor(durationInSeconds / 60);
+  const durationInMinutes = Math.floor(durationInSeconds / 60);
 
   function startInterval() {
     interval.current = setInterval(() => {
@@ -24,18 +34,21 @@ export default function LiveTimeLogger({
     }, 1000);
   }
 
+  console.log(loggedFocusId);
+
   function stopInterval() {
     if (interval.current) {
-      console.log("Clearing interval");
       clearInterval(interval.current);
     }
     loggedTimeCallback({
-      user_id: "admin",
+      user_id: user.id,
       start_time: toMySQLDatetime(startTime || new Date()),
       end_time: toMySQLDatetime(endTime || new Date()),
-      duration_minutes: minutes,
+      duration_minutes: durationInMinutes,
       description: "",
-    });
+    })
+      .then(setLoggedFocusId)
+      .catch(console.error);
   }
 
   function handleStartClick() {
@@ -48,15 +61,30 @@ export default function LiveTimeLogger({
     stopInterval();
   }
 
+  function handleSaveTagsClick() {
+    console.log("Saving tags");
+    if (!loggedFocusId) {
+      console.error("No logged focus id");
+      return;
+    }
+    addTagsToFocusLogCallback(loggedFocusId, selectedTagsIds);
+  }
+
   function renderContent() {
     if (endTime) {
       return (
         <>
-          <h1>Time logged</h1>
-          <p>
-            Start time: {startTime?.getTime()} - End time: {endTime?.getTime()}{" "}
-            - Duration:{durationInSeconds} seconds
-          </p>
+          <div className="self-center mb-10">
+            <h1>You logged {durationInMinutes} minutes 🔥</h1>
+          </div>
+          <AddTagsToLog
+            userTags={userTags}
+            selectedTagsIds={selectedTagsIds}
+            setSelectedTagsIds={setSelectedTagsIds}
+          />
+          <div className="self-center mt-10">
+            <Button onClick={handleSaveTagsClick}>Add tags</Button>
+          </div>
         </>
       );
     }
@@ -81,6 +109,33 @@ export default function LiveTimeLogger({
     );
   }
   return <div className="flex flex-col align-center">{renderContent()}</div>;
+}
+
+function AddTagsToLog({
+  userTags,
+  selectedTagsIds,
+  setSelectedTagsIds,
+}: {
+  userTags: UserTags[];
+  selectedTagsIds: string[];
+  setSelectedTagsIds: (tags: string[]) => void;
+}) {
+  return (
+    <div>
+      <ToggleGroup
+        type="multiple"
+        value={selectedTagsIds}
+        onValueChange={setSelectedTagsIds}
+      >
+        {userTags.map((tag) => (
+          <ToggleGroupItem key={tag.id} value={tag.id}>
+            {"#" + tag.name}
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
+      <ul></ul>
+    </div>
+  );
 }
 
 function DigitalStopwatch({

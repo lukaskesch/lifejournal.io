@@ -2,7 +2,12 @@
 
 import LiveTimeLogger from "@/components/LiveTimeLogger";
 import { db } from "../../../db";
-import { user_time_log, users } from "../../../drizzle/schema";
+import {
+  user_tags,
+  user_time_log,
+  user_time_log_has_tag,
+  users,
+} from "../../../drizzle/schema";
 import { eq } from "drizzle-orm/expressions";
 import { v4 as uuidv4 } from "uuid";
 import { FocusLog } from "@/types/FocusLog";
@@ -16,25 +21,55 @@ export default async function AppHome({}) {
     .limit(1)
     .execute()
     .then((result) => result[0]);
-  console.log("Users from drizzle:", usersResult);
-  console.log("User from drizzle:", user);
 
-  async function handleLoggedFocus(focusLog: FocusLog) {
+  async function handleLoggedFocus(focusLog: FocusLog): Promise<string> {
     "use server";
     try {
+      const id = uuidv4();
       await db.insert(user_time_log).values({
-        id: uuidv4(),
+        id: id,
         ...focusLog,
       });
+      return id;
     } catch (error) {
-      console.error("Error logging time:", error);
+      console.error("Error inserting user_time_log", error);
+      throw new Error("Error while logging focus");
+    }
+  }
+
+  async function getUserTags() {
+    const userTags = await db
+      .select()
+      .from(user_tags)
+      .where(eq(user_tags.user_id, user.id))
+      .execute();
+    return userTags;
+  }
+
+  async function addTagsToFocusLog(focusLogId: string, tagIds: string[]) {
+    "use server";
+    try {
+      await db.insert(user_time_log_has_tag).values(
+        tagIds.map((tagId) => ({
+          id: uuidv4(),
+          user_time_log_id: focusLogId,
+          tag_id: tagId,
+        })),
+      );
+    } catch (error) {
+      console.error("Error adding tags to focus log:", error);
     }
   }
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-24">
-      {user.email}
-      <LiveTimeLogger loggedTimeCallback={handleLoggedFocus} />
+      {/* {user.email} */}
+      <LiveTimeLogger
+        user={user}
+        loggedTimeCallback={handleLoggedFocus}
+        addTagsToFocusLogCallback={addTagsToFocusLog}
+        userTags={await getUserTags()}
+      />
     </div>
   );
 }
