@@ -19,32 +19,23 @@ export default function LiveTimeLogger({
   addTagsToFocusLogCallback: (focusLogId: string, tagIds: string[]) => void;
 }) {
   const [startTime, setStartTime] = React.useState<Date>();
-  const [durationInSeconds, setDurationInSeconds] = React.useState<number>(0);
   const [endTime, setEndTime] = React.useState<Date>();
   const [selectedTagsIds, setSelectedTagsIds] = React.useState<string[]>([]);
   const [loggedFocusId, setLoggedFocusId] = React.useState<string>();
 
-  const interval = React.useRef<NodeJS.Timeout>();
-
-  const durationInMinutes = Math.floor(durationInSeconds / 60);
-
-  function startInterval() {
-    interval.current = setInterval(() => {
-      setDurationInSeconds((prev) => (prev || 0) + 1);
-    }, 1000);
-  }
-
-  console.log(loggedFocusId);
-
   function stopInterval() {
-    if (interval.current) {
-      clearInterval(interval.current);
+    if (!startTime) {
+      return;
     }
+    setEndTime(new Date());
+    const endTime = new Date();
     loggedTimeCallback({
       user_id: user.id,
       start_time: toMySQLDatetime(startTime || new Date()),
       end_time: toMySQLDatetime(endTime || new Date()),
-      duration_minutes: durationInMinutes,
+      duration_minutes: Math.floor(
+        (endTime.getTime() - startTime.getTime()) / 1000 / 60,
+      ),
       description: "",
     })
       .then(setLoggedFocusId)
@@ -53,7 +44,6 @@ export default function LiveTimeLogger({
 
   function handleStartClick() {
     setStartTime(new Date());
-    startInterval();
   }
 
   function handleStopClick() {
@@ -71,11 +61,17 @@ export default function LiveTimeLogger({
   }
 
   function renderContent() {
-    if (endTime) {
+    if (startTime && endTime) {
       return (
         <>
           <div className="self-center mb-10">
-            <h1>You logged {durationInMinutes} minutes 🔥</h1>
+            <h1>
+              You logged{" "}
+              {Math.floor(
+                (endTime.getTime() - startTime.getTime()) / 1000 / 60,
+              )}{" "}
+              minutes 🔥
+            </h1>
           </div>
           <AddTagsToLog
             userTags={userTags}
@@ -93,7 +89,7 @@ export default function LiveTimeLogger({
       return (
         <>
           <div className="m-4">
-            <DigitalStopwatch durationInSeconds={durationInSeconds} />
+            <DigitalStopwatch startTime={startTime} />
           </div>
           <div className="self-center">
             <Button onClick={handleStopClick}>Stop logging</Button>
@@ -138,11 +134,8 @@ function AddTagsToLog({
   );
 }
 
-function DigitalStopwatch({
-  durationInSeconds,
-}: {
-  durationInSeconds: number;
-}) {
+function DigitalStopwatch({ startTime }: { startTime: Date }) {
+  const [durationInSeconds, setDurationInSeconds] = React.useState<number>(0);
   const seconds = durationInSeconds % 60;
   const minutes = Math.floor(durationInSeconds / 60);
   const hours = Math.floor(minutes / 60);
@@ -150,6 +143,18 @@ function DigitalStopwatch({
   const outputSeconds = seconds < 10 ? `0${seconds}` : seconds;
   const outputMinutes = minutes < 10 ? `0${minutes}` : minutes;
   const outputHours = hours < 10 ? `0${hours}` : hours;
+
+  const interval = React.useRef<NodeJS.Timeout>();
+
+  React.useEffect(() => {
+    interval.current = setInterval(() => {
+      const duration = new Date().getTime() - startTime.getTime();
+      setDurationInSeconds(Math.floor(duration / 1000));
+    }, 100);
+    return () => {
+      clearInterval(interval.current);
+    };
+  }, [startTime]);
 
   return (
     <div className="flex flex-row justify-center align-middle text-7xl font-mono">
