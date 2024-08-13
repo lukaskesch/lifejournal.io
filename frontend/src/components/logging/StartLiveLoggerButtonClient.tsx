@@ -7,7 +7,7 @@ export default function StartLiveLoggerButtonClient() {
   return (
     <Button
       onClick={() => {
-        router.push("app/live-logging");
+        router.push("app/logging/live");
       }}
     >
       Start Live Logger

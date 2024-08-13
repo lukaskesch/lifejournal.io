@@ -1,12 +1,12 @@
 "use server";
 
-import { db } from "../../../../db";
+import { db } from "../../../../../db";
 import {
   user_tags,
   user_time_log,
   user_time_log_has_tag,
   users,
-} from "../../../../drizzle/schema";
+} from "../../../../../drizzle/schema";
 import { eq } from "drizzle-orm/expressions";
 import { v4 as uuidv4 } from "uuid";
 import { FocusLog } from "@/types/FocusLog";
