@@ -1,13 +1,13 @@
 "use client";
 
 import { FocusLog } from "@/types/FocusLog";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import * as React from "react";
-import { toMySQLDatetime } from "../../db/db-utils";
-import { User, UserTags } from "../../drizzle/schema";
+import { toMySQLDatetime } from "../../../db/db-utils";
+import { User, UserTags } from "../../../drizzle/schema";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
-export default function LiveTimeLogger({
+export default function LiveTimeLoggerClient({
   user,
   userTags,
   loggedTimeCallback,
@@ -18,7 +18,7 @@ export default function LiveTimeLogger({
   loggedTimeCallback: (FocusLog: FocusLog) => Promise<string>;
   addTagsToFocusLogCallback: (focusLogId: string, tagIds: string[]) => void;
 }) {
-  const [startTime, setStartTime] = React.useState<Date>();
+  const [startTime, setStartTime] = React.useState<Date>(new Date());
   const [endTime, setEndTime] = React.useState<Date>();
   const [selectedTagsIds, setSelectedTagsIds] = React.useState<string[]>([]);
   const [loggedFocusId, setLoggedFocusId] = React.useState<string>();
