@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import * as React from "react";
 import { toMySQLDatetime } from "../../../db/db-utils";
 import { User, UserTags } from "../../../drizzle/schema";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import SelectTagsClient from "./SelectTagsClient";
 
 export default function LiveTimeLoggerClient({
   user,
@@ -73,7 +73,7 @@ export default function LiveTimeLoggerClient({
               minutes 🔥
             </h1>
           </div>
-          <AddTagsToLog
+          <SelectTagsClient
             userTags={userTags}
             selectedTagsIds={selectedTagsIds}
             setSelectedTagsIds={setSelectedTagsIds}
@@ -105,33 +105,6 @@ export default function LiveTimeLoggerClient({
     );
   }
   return <div className="flex flex-col align-center">{renderContent()}</div>;
-}
-
-function AddTagsToLog({
-  userTags,
-  selectedTagsIds,
-  setSelectedTagsIds,
-}: {
-  userTags: UserTags[];
-  selectedTagsIds: string[];
-  setSelectedTagsIds: (tags: string[]) => void;
-}) {
-  return (
-    <div>
-      <ToggleGroup
-        type="multiple"
-        value={selectedTagsIds}
-        onValueChange={setSelectedTagsIds}
-      >
-        {userTags.map((tag) => (
-          <ToggleGroupItem key={tag.id} value={tag.id}>
-            {"#" + tag.name}
-          </ToggleGroupItem>
-        ))}
-      </ToggleGroup>
-      <ul></ul>
-    </div>
-  );
 }
 
 function DigitalStopwatch({ startTime }: { startTime: Date }) {

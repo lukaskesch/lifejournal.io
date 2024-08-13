@@ -1,15 +1,28 @@
 "use client";
-import { useState, useEffect } from "react";
+import React from "react";
 import { Input } from "../ui/input";
+import SelectTagsClient from "./SelectTagsClient";
+import { User, UserTags } from "../../../drizzle/schema";
+import { Button } from "../ui/button";
+import { RetroactiveFocusLog } from "@/types/RetroactiveFocusLog";
+import { toMySQLDatetime } from "../../../db/db-utils";
 
-export default function RetroactiveLoggerClient() {
-  const [startDateTime, setStartDateTime] = useState("");
-  const [startPlaceholder, setStartPlaceholder] = useState("");
+export default function RetroactiveLoggerClient({
+  userTags,
+  loggedFocusCallback,
+  user,
+}: {
+  user: User;
+  userTags: UserTags[];
+  loggedFocusCallback: (focusLog: RetroactiveFocusLog) => Promise<string>;
+}) {
+  const [startDateTime, setStartDateTime] = React.useState("");
+  const [startPlaceholder, setStartPlaceholder] = React.useState("");
+  const [finishDateTime, setFinishDateTime] = React.useState("");
+  const [finishPlaceholder, setFinishPlaceholder] = React.useState("");
+  const [selectedTagsIds, setSelectedTagsIds] = React.useState<string[]>([]);
 
-  const [finishDateTime, setFinishDateTime] = useState("");
-  const [finishPlaceholder, setFinishPlaceholder] = useState("");
-
-  useEffect(() => {
+  React.useEffect(() => {
     const now = new Date();
 
     const formattedFinsihDateTime = formatDateTimeLocal(now);
@@ -45,6 +58,28 @@ export default function RetroactiveLoggerClient() {
     console.log("Selected date and time:", event.target.value);
   };
 
+  const handleLogTime = async () => {
+    const convertedStartDateTime = new Date(startDateTime);
+    const convertedFinishDateTime = new Date(finishDateTime);
+    const duration = Math.floor(
+      (convertedFinishDateTime.getTime() - convertedStartDateTime.getTime()) /
+        60000,
+    );
+
+    const focusLog: RetroactiveFocusLog = {
+      start_time: startDateTime,
+      end_time: finishDateTime,
+      user_id: user.id,
+      duration_minutes: duration,
+      description: "",
+      tagIds: selectedTagsIds,
+    };
+
+    console.log("Logging focus:", focusLog);
+
+    await loggedFocusCallback(focusLog);
+  };
+
   return (
     <div>
       <Input
@@ -59,6 +94,12 @@ export default function RetroactiveLoggerClient() {
         value={finishDateTime}
         onChange={handleFinishDateTimeChange}
       />
+      <SelectTagsClient
+        userTags={userTags}
+        selectedTagsIds={selectedTagsIds}
+        setSelectedTagsIds={setSelectedTagsIds}
+      />
+      <Button onClick={handleLogTime}>Log time</Button>
     </div>
   );
 }
