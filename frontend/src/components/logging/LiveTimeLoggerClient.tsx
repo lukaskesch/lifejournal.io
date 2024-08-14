@@ -110,7 +110,7 @@ export default function LiveTimeLoggerClient({
 function DigitalStopwatch({ startTime }: { startTime: Date }) {
   const [durationInSeconds, setDurationInSeconds] = React.useState<number>(0);
   const seconds = durationInSeconds % 60;
-  const minutes = Math.floor(durationInSeconds / 60);
+  const minutes = Math.floor(durationInSeconds / 60) % 60;
   const hours = Math.floor(minutes / 60);
 
   const outputSeconds = seconds < 10 ? `0${seconds}` : seconds;
