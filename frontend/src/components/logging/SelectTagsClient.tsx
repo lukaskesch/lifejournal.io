@@ -10,6 +10,7 @@ export default function SelectTagsClient({
   selectedTagsIds: string[];
   setSelectedTagsIds: (tags: string[]) => void;
 }) {
+  userTags.sort((a, b) => a.name.localeCompare(b.name));
   return (
     <div>
       <ToggleGroup
