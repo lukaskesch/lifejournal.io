@@ -38,7 +38,6 @@ export default function TagsClient({
           <div className="m-4">
             <Button>Add Tag</Button>
           </div>
-          {/* <button className="btn">Open Dialog</button> */}
         </DialogTrigger>
         <DialogContent className="sm:max-w-[400px]">
           <DialogHeader>
