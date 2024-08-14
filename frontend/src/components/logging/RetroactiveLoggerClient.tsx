@@ -81,25 +81,33 @@ export default function RetroactiveLoggerClient({
   };
 
   return (
-    <div>
-      <Input
-        type="datetime-local"
-        placeholder={startPlaceholder}
-        value={startDateTime}
-        onChange={handleStartDateTimeChange}
-      />
-      <Input
-        type="datetime-local"
-        placeholder={finishPlaceholder}
-        value={finishDateTime}
-        onChange={handleFinishDateTimeChange}
-      />
-      <SelectTagsClient
-        userTags={userTags}
-        selectedTagsIds={selectedTagsIds}
-        setSelectedTagsIds={setSelectedTagsIds}
-      />
-      <Button onClick={handleLogTime}>Log time</Button>
+    <div className="flex flex-col">
+      <div className="self-center p-4">
+        <Input
+          type="datetime-local"
+          placeholder={startPlaceholder}
+          value={startDateTime}
+          onChange={handleStartDateTimeChange}
+        />
+      </div>
+      <div className="self-center p-4">
+        <Input
+          type="datetime-local"
+          placeholder={finishPlaceholder}
+          value={finishDateTime}
+          onChange={handleFinishDateTimeChange}
+        />
+      </div>
+      <div className="self-center p-4">
+        <SelectTagsClient
+          userTags={userTags}
+          selectedTagsIds={selectedTagsIds}
+          setSelectedTagsIds={setSelectedTagsIds}
+        />
+      </div>
+      <div className="self-center p-4">
+        <Button onClick={handleLogTime}>Log time</Button>
+      </div>
     </div>
   );
 }
