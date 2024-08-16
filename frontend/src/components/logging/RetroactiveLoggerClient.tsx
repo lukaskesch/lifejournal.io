@@ -6,6 +6,7 @@ import { User, UserTags } from "../../../drizzle/schema";
 import { Button } from "../ui/button";
 import { RetroactiveFocusLog } from "@/types/RetroactiveFocusLog";
 import { toMySQLDatetime } from "../../../db/db-utils";
+import { Textarea } from "../ui/textarea";
 
 export default function RetroactiveLoggerClient({
   userTags,
@@ -21,6 +22,7 @@ export default function RetroactiveLoggerClient({
   const [finishDateTime, setFinishDateTime] = React.useState("");
   const [finishPlaceholder, setFinishPlaceholder] = React.useState("");
   const [selectedTagsIds, setSelectedTagsIds] = React.useState<string[]>([]);
+  const [description, setDescription] = React.useState("");
 
   React.useEffect(() => {
     const now = new Date();
@@ -71,7 +73,7 @@ export default function RetroactiveLoggerClient({
       end_time: finishDateTime,
       user_id: user.id,
       duration_minutes: duration,
-      description: "",
+      description: description,
       tagIds: selectedTagsIds,
     };
 
@@ -103,6 +105,13 @@ export default function RetroactiveLoggerClient({
           userTags={userTags}
           selectedTagsIds={selectedTagsIds}
           setSelectedTagsIds={setSelectedTagsIds}
+        />
+      </div>
+      <div className="self-center p-4">
+        <Textarea
+          placeholder="Description"
+          value={description}
+          onChange={(event) => setDescription(event.target.value)}
         />
       </div>
       <div className="self-center p-4">
