@@ -6,8 +6,9 @@
 ## Features
 
 - [ ] Log focus with only date and duration
-- [ ] List focus logs
 - [ ] List tags (name, logs count, last log date) and rename
+- [x] NavBar
+- [x] List focus logs
+- [x] Create tags
 - [x] Live focus log
 - [x] Retroactive focus log
-- [x] Create tags
