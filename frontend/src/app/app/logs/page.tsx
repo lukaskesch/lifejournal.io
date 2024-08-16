@@ -8,13 +8,12 @@ import {
   users,
 } from "../../../../drizzle/schema";
 import { eq } from "drizzle-orm/expressions";
-import { v4 as uuidv4 } from "uuid";
-import RetroactiveLoggerClient from "@/components/logging/RetroactiveLoggerClient";
-import { RetroactiveFocusLog } from "@/types/RetroactiveFocusLog";
 import { FocusLogWithTags } from "@/types/FocusLogWithTags";
 import LogListClient from "@/components/logs/LogListClient";
+import { headers } from "next/headers";
 
 export default async function Logs() {
+  headers();
   const user = await db
     .select()
     .from(users)

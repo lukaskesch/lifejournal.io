@@ -11,8 +11,10 @@ import { eq } from "drizzle-orm/expressions";
 import { v4 as uuidv4 } from "uuid";
 import { FocusLog } from "@/types/FocusLog";
 import LiveTimeLoggerClient from "@/components/logging/LiveTimeLoggerClient";
+import { headers } from "next/headers";
 
 export default async function LiveFocusLogPage() {
+  headers();
   const user = await db
     .select()
     .from(users)

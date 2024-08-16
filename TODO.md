@@ -1,6 +1,6 @@
 ## Bugs
 
-- [ ] Don't cache server components
+- [x] Don't cache server components
 - [x] Fix stopwatch > 1 hour
 
 ## Features

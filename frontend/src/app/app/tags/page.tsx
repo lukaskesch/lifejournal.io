@@ -5,8 +5,10 @@ import { user_tags, users, UserTags } from "../../../../drizzle/schema";
 import { eq } from "drizzle-orm/expressions";
 import { v4 as uuidv4 } from "uuid";
 import TagsClient from "@/components/tags/TagsClient";
+import { headers } from "next/headers";
 
 export default async function Tags() {
+  headers();
   const user = await db
     .select()
     .from(users)
