@@ -60,7 +60,7 @@ function Log({ log }: { log: FocusLogWithTags }) {
         <div>{formatOutputDate(log.start_time)}</div>
         <div>{": " + timespanString}</div>
       </div>
-      <div>{log.id}</div>
+      {/* <div>{log.id}</div> */}
       <div>{log.description}</div>
       <div>{log.tags.map((tag) => tag.name).join(", ")}</div>
     </div>
