@@ -6,6 +6,7 @@ import * as React from "react";
 import { toMySQLDatetime } from "../../../db/db-utils";
 import { User, UserTags } from "../../../drizzle/schema";
 import SelectTagsClient from "./SelectTagsClient";
+import { Textarea } from "../ui/textarea";
 
 export default function LiveTimeLoggerClient({
   user,
@@ -22,6 +23,7 @@ export default function LiveTimeLoggerClient({
   const [endTime, setEndTime] = React.useState<Date>();
   const [selectedTagsIds, setSelectedTagsIds] = React.useState<string[]>([]);
   const [loggedFocusId, setLoggedFocusId] = React.useState<string>();
+  const [description, setDescription] = React.useState("");
 
   function stopInterval() {
     if (!startTime) {
@@ -36,7 +38,7 @@ export default function LiveTimeLoggerClient({
       duration_minutes: Math.floor(
         (endTime.getTime() - startTime.getTime()) / 1000 / 60,
       ),
-      description: "",
+      description: description,
     })
       .then(setLoggedFocusId)
       .catch(console.error);
@@ -91,7 +93,14 @@ export default function LiveTimeLoggerClient({
           <div className="m-4">
             <DigitalStopwatch startTime={startTime} />
           </div>
-          <div className="self-center">
+          <div className="">
+            <Textarea
+              placeholder="Description"
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+            />
+          </div>
+          <div className="self-center m-4">
             <Button onClick={handleStopClick}>Stop logging</Button>
           </div>
         </>
