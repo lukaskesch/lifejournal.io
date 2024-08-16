@@ -123,7 +123,7 @@ function DigitalStopwatch({ startTime }: { startTime: Date }) {
   const hours = Math.floor(minutes / 60);
 
   const outputSeconds = seconds < 10 ? `0${seconds}` : seconds;
-  const outputMinutes = minutes < 10 ? `0${minutes % 60}` : minutes;
+  const outputMinutes = minutes < 10 ? `0${minutes % 60}` : minutes % 60;
   const outputHours = hours < 10 ? `0${hours}` : hours;
 
   const interval = React.useRef<NodeJS.Timeout>();
