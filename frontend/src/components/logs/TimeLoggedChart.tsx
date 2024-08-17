@@ -10,7 +10,7 @@ import { FocusLogWithTags } from "@/types/FocusLogWithTags";
 const chartConfig = {
   minutes: {
     label: "Minutes",
-    color: "#2563eb",
+    color: "#0F172A",
   },
 } satisfies ChartConfig;
 
