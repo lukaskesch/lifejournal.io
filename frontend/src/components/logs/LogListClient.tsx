@@ -2,6 +2,7 @@
 
 import React from "react";
 import { FocusLogWithTags } from "@/types/FocusLogWithTags";
+import { TimeLoggedChart } from "./TimeLoggedChart";
 
 export default function LogListClient({
   logsWithTags,
@@ -22,6 +23,9 @@ export default function LogListClient({
   });
   return (
     <div className="flex flex-col min-h-screen">
+      <div className="mr-4 my-4">
+        <TimeLoggedChart logsWithTags={logsWithTags} />
+      </div>
       {logsWithTags.map((log) => (
         <Log key={log.id} log={log} />
       ))}
