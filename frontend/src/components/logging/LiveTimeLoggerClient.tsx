@@ -19,11 +19,33 @@ export default function LiveTimeLoggerClient({
   loggedTimeCallback: (FocusLog: FocusLog) => Promise<string>;
   addTagsToFocusLogCallback: (focusLogId: string, tagIds: string[]) => void;
 }) {
-  const [startTime, setStartTime] = React.useState<Date>(new Date());
+  const [startTime, setStartTime] = React.useState<Date>();
   const [endTime, setEndTime] = React.useState<Date>();
   const [selectedTagsIds, setSelectedTagsIds] = React.useState<string[]>([]);
   const [loggedFocusId, setLoggedFocusId] = React.useState<string>();
   const [description, setDescription] = React.useState("");
+
+  React.useEffect(() => {
+    const storedStartTime = localStorage.getItem("startTime");
+    console.log("Stored start time:", storedStartTime);
+    if (storedStartTime) {
+      setStartTime(new Date(storedStartTime));
+    } else {
+      setStartTime(new Date());
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (startTime) {
+      localStorage.setItem("startTime", startTime.toISOString());
+    }
+  }, [startTime]);
+
+  React.useEffect(() => {
+    if (endTime) {
+      localStorage.removeItem("startTime");
+    }
+  }, [endTime]);
 
   function stopInterval() {
     if (!startTime) {

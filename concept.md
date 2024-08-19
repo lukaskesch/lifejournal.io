@@ -13,7 +13,7 @@
 
 - You can define areas where you want to improve
 - You can set goals / milestones for each areas
-- An area is under the hood is should probably be a tag
+- An area is under the hood is should probably be a tag or even multiple tags
 - Set checkin reminders
 
 ### Stats
