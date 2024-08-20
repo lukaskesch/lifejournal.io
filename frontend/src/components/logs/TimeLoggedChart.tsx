@@ -8,8 +8,8 @@ import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { FocusLogWithTags } from "@/types/FocusLogWithTags";
 
 const chartConfig = {
-  minutes: {
-    label: "Minutes",
+  hours: {
+    label: "Hours",
     color: "#0F172A",
   },
 } satisfies ChartConfig;
@@ -22,14 +22,15 @@ export function TimeLoggedChart({
   const [chartData, setChartData] = React.useState<
     {
       date: string;
-      minutes: number;
+      hours: number;
     }[]
   >();
 
   function formatOutputDate(date: Date): string {
     const dateString = `0${date.getDate()}`.slice(-2);
     const monthString = `0${date.getMonth() + 1}`.slice(-2);
-    return `${dateString}.${monthString}`;
+    const dayOfWeek = date.toLocaleDateString("en-US", { weekday: "short" });
+    return `${dayOfWeek}, ${dateString}.${monthString}`;
   }
 
   React.useEffect(() => {
@@ -45,7 +46,7 @@ export function TimeLoggedChart({
       for (let i = 0; i < 30; i++) {
         data.push({
           date: formatOutputDate(date),
-          minutes: 0,
+          hours: 0,
         });
         date.setDate(date.getDate() + 1);
       }
@@ -62,8 +63,12 @@ export function TimeLoggedChart({
       const dateString = formatOutputDate(date);
       const existingData = data.find((item) => item.date === dateString);
       if (existingData) {
-        existingData.minutes += log.duration_minutes;
+        existingData.hours += log.duration_minutes / 60;
       }
+    });
+
+    data.forEach((item) => {
+      item.hours = Math.round(item.hours * 10) / 10;
     });
 
     console.log("Data", data);
@@ -84,15 +89,15 @@ export function TimeLoggedChart({
           tickLine={false}
           // tickMargin={10}
           axisLine={false}
-          tickFormatter={(value) => value.slice(0, 5)}
+          tickFormatter={(value) => value.slice(5, 10)}
         />
         <YAxis
           tickLine={false}
           tickMargin={10}
           axisLine={false}
-          tickFormatter={(value) => `${value}`}
+          tickFormatter={(value) => `${value}h`}
         />
-        <Bar dataKey="minutes" fill="var(--color-minutes)" radius={4} />
+        <Bar dataKey="hours" fill="var(--color-hours)" radius={4} />
       </BarChart>
     </ChartContainer>
   );
