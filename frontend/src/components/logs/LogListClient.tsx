@@ -9,6 +9,30 @@ export default function LogListClient({
 }: {
   logsWithTags: FocusLogWithTags[];
 }) {
+  const [overviewText, setOverviewText] = React.useState("");
+
+  const hours = React.useMemo(() => {
+    return Math.floor(
+      logsWithTags.reduce((acc, log) => {
+        return acc + log.duration_minutes;
+      }, 0) / 60,
+    );
+  }, [logsWithTags]);
+
+  const numberOfLogs = React.useMemo(() => {
+    return logsWithTags.length;
+  }, [logsWithTags]);
+
+  const uniqueTagsCount = React.useMemo(() => {
+    const uniqueTags = new Set<string>();
+    logsWithTags.forEach((log) => {
+      log.tags.forEach((tag) => {
+        uniqueTags.add(tag.name);
+      });
+    });
+    return uniqueTags.size;
+  }, [logsWithTags]);
+
   logsWithTags.sort((a, b) => {
     if (!a.start_time || !b.start_time) {
       return 0;
@@ -22,9 +46,14 @@ export default function LogListClient({
     return 0;
   });
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen m-2">
       <div className="mr-4 my-4">
         <TimeLoggedChart logsWithTags={logsWithTags} />
+      </div>
+      <div className="flex flex-row justify-between m-2">
+        <div className="font-bold text-2xl">{numberOfLogs} logs</div>
+        <div className="font-bold text-2xl">{hours} hours</div>
+        <div className="font-bold text-2xl">{uniqueTagsCount} tags</div>
       </div>
       {logsWithTags.map((log) => (
         <Log key={log.id} log={log} />
