@@ -84,11 +84,20 @@ function Log({ log }: { log: FocusLogWithTags }) {
     return `${dayOfWeek}, ${day} ${month}`;
   }
 
+  function formatDuration(duration: number): string {
+    const hours = Math.floor(duration / 60);
+    const minutes = duration % 60;
+    if (hours === 0) {
+      return `${minutes} minutes`;
+    }
+    return `${hours} hours ${minutes} minutes`;
+  }
+
   const timespanString = `${formatOutputTime(log.start_time)} - ${formatOutputTime(log.end_time)}`;
 
   return (
-    <div className="border p-2 m-2">
-      <div className="font-bold">{log.duration_minutes + " minutes"}</div>
+    <div className="border p-2 my-2 rounded-lg">
+      <div className="font-bold">{formatDuration(log.duration_minutes)}</div>
       <div className="flex flex-row ">
         <div>{formatOutputDate(log.start_time)}</div>
         <div>{": " + timespanString}</div>
