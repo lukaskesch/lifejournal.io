@@ -9,8 +9,6 @@ export default function LogListClient({
 }: {
   logsWithTags: FocusLogWithTags[];
 }) {
-  const [overviewText, setOverviewText] = React.useState("");
-
   const hours = React.useMemo(() => {
     return Math.floor(
       logsWithTags.reduce((acc, log) => {
@@ -63,16 +61,6 @@ export default function LogListClient({
 }
 
 function Log({ log }: { log: FocusLogWithTags }) {
-  function formatOutputTime(mysqlDateTime: string | null): string {
-    if (!mysqlDateTime) {
-      return "";
-    }
-    const date = new Date(mysqlDateTime);
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    return `${hours}:${minutes}`;
-  }
-
   function formatOutputDate(mysqlDateTime: string | null): string {
     if (!mysqlDateTime) {
       return "";
@@ -88,23 +76,29 @@ function Log({ log }: { log: FocusLogWithTags }) {
     const hours = Math.floor(duration / 60);
     const minutes = duration % 60;
     if (hours === 0) {
-      return `${minutes} minutes`;
+      return `${minutes}min`;
     }
-    return `${hours} hours ${minutes} minutes`;
+    return `${hours}h ${minutes}min`;
   }
 
-  const timespanString = `${formatOutputTime(log.start_time)} - ${formatOutputTime(log.end_time)}`;
-
   return (
-    <div className="border p-2 my-2 rounded-lg">
-      <div className="font-bold">{formatDuration(log.duration_minutes)}</div>
-      <div className="flex flex-row ">
-        <div>{formatOutputDate(log.start_time)}</div>
-        <div>{": " + timespanString}</div>
+    <div className="p-2 m-2 rounded-lg bg-slate-100">
+      <div className="font-bold">
+        {formatOutputDate(log.start_time)}
+        {/* {" – "} */}
+        <span className="font-medium">{" | "}</span>
+        {formatDuration(log.duration_minutes)}
       </div>
       {/* <div>{log.id}</div> */}
       <div>{log.description}</div>
-      <div>{log.tags.map((tag) => tag.name).join(", ")}</div>
+      <div className="mt-1">
+        {log.tags.map((tag) => (
+          <span key={tag.id} className="bg-slate-200 rounded-lg p-1 px-2 mr-2">
+            {/* {"#"} */}
+            {tag.name}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
