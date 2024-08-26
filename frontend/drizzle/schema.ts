@@ -12,7 +12,7 @@ import {
 } from "drizzle-orm/mysql-core";
 import { InferModel, sql } from "drizzle-orm";
 import {} from "drizzle-orm/mysql-core";
-import type { AdapterAccountType } from "next-auth/adapters";
+import type { AdapterAccount } from "next-auth/adapters";
 
 export const user_tags = mysqlTable(
   "user_tags",
@@ -108,9 +108,7 @@ export const accounts = mysqlTable(
     userId: varchar("userId", { length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    type: varchar("type", { length: 255 })
-      .$type<AdapterAccountType>()
-      .notNull(),
+    type: varchar("type", { length: 255 }).$type<AdapterAccount>().notNull(),
     provider: varchar("provider", { length: 255 }).notNull(),
     providerAccountId: varchar("providerAccountId", { length: 255 }).notNull(),
     refresh_token: varchar("refresh_token", { length: 255 }),
