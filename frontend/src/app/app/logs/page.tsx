@@ -11,8 +11,12 @@ import { eq } from "drizzle-orm/expressions";
 import { FocusLogWithTags } from "@/types/FocusLogWithTags";
 import LogListClient from "@/components/logs/LogListClient";
 import { headers } from "next/headers";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export default async function Logs() {
+  const session = await getServerSession(authOptions);
+  console.log("Server session", session);
   headers();
   const user = await db
     .select()

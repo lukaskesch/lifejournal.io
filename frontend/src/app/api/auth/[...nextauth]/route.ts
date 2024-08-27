@@ -1,20 +1,17 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "../../../../../db/index";
 import { users } from "../../../../../drizzle/schema";
 import { eq } from "drizzle-orm";
 
-const handler = NextAuth({
-  adapter: DrizzleAdapter(db),
+export const authOptions: NextAuthOptions = NextAuth({
+  adapter: DrizzleAdapter(db, {
+    usersTable: users,
+  }),
   providers: [
     CredentialsProvider({
-      // The name to display on the sign in form (e.g. 'Sign in with...')
       name: "Credentials",
-      // The credentials is used to generate a suitable form on the sign in page.
-      // You can specify whatever fields you are expecting to be submitted.
-      // e.g. domain, username, password, 2FA token, etc.
-      // You can pass any HTML attribute to the <input> tag through the object.
       credentials: {
         username: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
@@ -32,7 +29,7 @@ const handler = NextAuth({
 
         const user = userArray[0];
 
-        console.log(user);
+        // console.log(user);
         if (!user) {
           return null;
         }
@@ -54,20 +51,26 @@ const handler = NextAuth({
       },
     }),
   ],
-  // session: {
-  //   strategy: "database",
-  //   maxAge: 30 * 24 * 60 * 60, // 30 days
-  //   updateAge: 24 * 60 * 60, // 24 hours
-  // },
-  // secret: process.env.NEXTAUTH_SECRET,
-  // callbacks: {
-  //   session: async ({ session, user }) => {
-  //     if (session?.user) {
-  //       session.user.id = user.id;
-  //     }
-  //     return session;
-  //   },
-  // },
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        // Add any other user properties you want to include
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        // Add any other user properties you want to include
+      }
+      return session;
+    },
+  },
+  secret: process.env.NEXTAUTH_SECRET,
 });
 
-export { handler as GET, handler as POST };
+export { authOptions as GET, authOptions as POST };
