@@ -12,13 +12,22 @@ import { v4 as uuidv4 } from "uuid";
 import { FocusLog } from "@/types/FocusLog";
 import LiveTimeLoggerClient from "@/components/logging/LiveTimeLoggerClient";
 import { headers } from "next/headers";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 
 export default async function LiveFocusLogPage() {
-  headers();
+  const session = await getServerSession(authOptions);
+  const email = session?.user?.email;
+
+  // headers();
+  if (!email) {
+    return null;
+  }
+
   const user = await db
     .select()
     .from(users)
-    .where(eq(users.email, "lukas.kesch@gmail.com"))
+    .where(eq(users.email, email))
     .limit(1)
     .execute()
     .then((result) => result[0]);

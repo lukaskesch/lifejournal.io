@@ -91,7 +91,7 @@ function Log({ log }: { log: FocusLogWithTags }) {
       </div>
       {/* <div>{log.id}</div> */}
       <div>{log.description}</div>
-      <div className="mt-1">
+      <div className="my-1">
         {log.tags.map((tag) => (
           <span key={tag.id} className="bg-slate-200 rounded-lg p-1 px-2 mr-2">
             {/* {"#"} */}

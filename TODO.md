@@ -6,7 +6,10 @@
 
 ## Improvements
 
+- [ ] Add option to start log in the header
 - [ ] Make tags component responsive
+- [ ] Give feedback when log is saved
+- [ ] Find and implement color scheme
 
 ## Features
 
@@ -15,6 +18,7 @@
 - [ ] Log focus with only date and duration
 - [ ] List tags (name, logs count, last log date) and rename
 - [ ] Give tags a color
+- [ ] Add streaks (days, weeks) to dashboard (and maybe to tags)
 - [x] Make chart of hours logged per day
 - [x] NavBar
 - [x] List focus logs
