@@ -6,9 +6,9 @@ import { users } from "../../../../../drizzle/schema";
 import { eq } from "drizzle-orm";
 
 export const authOptions: NextAuthOptions = NextAuth({
-  adapter: DrizzleAdapter(db, {
-    usersTable: users,
-  }),
+  // adapter: DrizzleAdapter(db, {
+  //   usersTable: users,
+  // }),
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -65,6 +65,7 @@ export const authOptions: NextAuthOptions = NextAuth({
     },
     async session({ session, token }) {
       if (session.user) {
+        session.user.id = token.id;
         // Add any other user properties you want to include
       }
       return session;
