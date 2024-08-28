@@ -12,16 +12,21 @@ import { FocusLogWithTags } from "@/types/FocusLogWithTags";
 import LogListClient from "@/components/logs/LogListClient";
 import { headers } from "next/headers";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOptions";
 
 export default async function Logs() {
   const session = await getServerSession(authOptions);
-  console.log("Server session", session);
-  headers();
+  const email = session?.user?.email;
+
+  // headers();
+  if (!email) {
+    return null;
+  }
+
   const user = await db
     .select()
     .from(users)
-    .where(eq(users.email, "lukas.kesch@gmail.com"))
+    .where(eq(users.email, email))
     .limit(1)
     .execute()
     .then((result) => result[0]);
