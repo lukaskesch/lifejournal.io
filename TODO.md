@@ -6,11 +6,11 @@
 
 ## Improvements
 
-- [ ] When setting start time, set end time to same day one hour later
 - [ ] Add option to start log in the header and maybe add redirect to previous page
 - [ ] Make tags component responsive
 - [ ] Give feedback when log is saved
 - [ ] Find and implement color scheme
+- [x] When setting start time, set end time to same day one hour later
 
 ## Features
 

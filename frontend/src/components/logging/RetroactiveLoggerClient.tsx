@@ -17,27 +17,30 @@ export default function RetroactiveLoggerClient({
   userTags: UserTags[];
   loggedFocusCallback: (focusLog: RetroactiveFocusLog) => Promise<string>;
 }) {
-  const [startDateTime, setStartDateTime] = React.useState("");
-  const [startPlaceholder, setStartPlaceholder] = React.useState("");
-  const [finishDateTime, setFinishDateTime] = React.useState("");
-  const [finishPlaceholder, setFinishPlaceholder] = React.useState("");
+  const [startDateTimeString, setStartDateTimeString] = React.useState("");
+  const [finishDateTimeString, setFinishDateTimeString] = React.useState("");
   const [selectedTagsIds, setSelectedTagsIds] = React.useState<string[]>([]);
   const [description, setDescription] = React.useState("");
 
   React.useEffect(() => {
     const now = new Date();
 
-    const formattedFinsihDateTime = formatDateTimeLocal(now);
-    setFinishPlaceholder(formattedFinsihDateTime);
-    setFinishDateTime(formattedFinsihDateTime);
+    const formattedFinsihDateTime = formatDateTimeLocalToString(now);
+    setFinishDateTimeString(formattedFinsihDateTime);
 
     now.setHours(now.getHours() - 1);
-    const formattedStartDateTime = formatDateTimeLocal(now);
-    setStartPlaceholder(formattedStartDateTime);
-    setStartDateTime(formattedStartDateTime);
+    const formattedStartDateTime = formatDateTimeLocalToString(now);
+    setStartDateTimeString(formattedStartDateTime);
   }, []);
 
-  const formatDateTimeLocal = (date: Date): string => {
+  React.useEffect(() => {
+    if (!startDateTimeString) return;
+    const startDateTime = formatStringToDateTimeLocal(startDateTimeString);
+    startDateTime.setHours(startDateTime.getHours() + 1);
+    setFinishDateTimeString(formatDateTimeLocalToString(startDateTime));
+  }, [startDateTimeString]);
+
+  const formatDateTimeLocalToString = (date: Date): string => {
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const day = date.getDate().toString().padStart(2, "0");
@@ -46,31 +49,44 @@ export default function RetroactiveLoggerClient({
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
 
+  const formatStringToDateTimeLocal = (dateString: string): Date => {
+    const newDate = new Date();
+    const year = parseInt(dateString.slice(0, 4));
+    newDate.setFullYear(year);
+    const month = parseInt(dateString.slice(5, 7)) - 1;
+    newDate.setMonth(month);
+    const day = parseInt(dateString.slice(8, 10));
+    newDate.setDate(day);
+    const hours = parseInt(dateString.slice(11, 13));
+    newDate.setHours(hours);
+    const minutes = parseInt(dateString.slice(14, 16));
+    newDate.setMinutes(minutes);
+    return newDate;
+  };
+
   const handleStartDateTimeChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setStartDateTime(event.target.value);
-    console.log("Selected date and time:", event.target.value);
+    setStartDateTimeString(event.target.value);
   };
 
   const handleFinishDateTimeChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setFinishDateTime(event.target.value);
-    console.log("Selected date and time:", event.target.value);
+    setFinishDateTimeString(event.target.value);
   };
 
   const handleLogTime = async () => {
-    const convertedStartDateTime = new Date(startDateTime);
-    const convertedFinishDateTime = new Date(finishDateTime);
+    const convertedStartDateTime = new Date(startDateTimeString);
+    const convertedFinishDateTime = new Date(finishDateTimeString);
     const duration = Math.floor(
       (convertedFinishDateTime.getTime() - convertedStartDateTime.getTime()) /
         60000,
     );
 
     const focusLog: RetroactiveFocusLog = {
-      start_time: startDateTime,
-      end_time: finishDateTime,
+      start_time: startDateTimeString,
+      end_time: finishDateTimeString,
       user_id: user.id,
       duration_minutes: duration,
       description: description,
@@ -87,16 +103,14 @@ export default function RetroactiveLoggerClient({
       <div className="self-center p-4">
         <Input
           type="datetime-local"
-          placeholder={startPlaceholder}
-          value={startDateTime}
+          value={startDateTimeString}
           onChange={handleStartDateTimeChange}
         />
       </div>
       <div className="self-center p-4">
         <Input
           type="datetime-local"
-          placeholder={finishPlaceholder}
-          value={finishDateTime}
+          value={finishDateTimeString}
           onChange={handleFinishDateTimeChange}
         />
       </div>
