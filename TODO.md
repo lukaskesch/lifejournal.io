@@ -1,23 +1,26 @@
 ## Bugs
 
+- [ ] Stopwatch hh:m:ss bug when minutes is like 0[1-9]
 - [x] Long backgrounded tab gets dropped. Maybe use `localStorage` to store start time
 - [x] Don't cache server components
 - [x] Fix stopwatch > 1 hour
 
 ## Improvements
 
-- [ ] Add option to start log in the header and maybe add redirect to previous page
 - [ ] Make tags component responsive
 - [ ] After loggin redirect to dashboard if user was on a public page before
-- [ ] Give feedback when log is saved
 - [ ] Find and implement color scheme
 - [ ] Hide footer on /app/\*
+- [x] Add option to start log in the header and maybe add redirect to previous page
 - [x] When setting start time, set end time to same day one hour later
 
 ## Features
 
-- [ ] Add option to pause and resume stopwatch
+- [ ] Sign up
+- [ ] Password
+- [ ] Edit and delete focus logs
 - [ ] Log focus with only date and duration
+- [ ] Add option to pause and resume stopwatch
 - [ ] List tags (name, logs count, last log date) and rename
 - [ ] Give tags a color
 - [ ] Add streaks (days, weeks) to dashboard (and maybe to tags)
