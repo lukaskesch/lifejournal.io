@@ -8,18 +8,20 @@
 
 - [ ] Add option to start log in the header and maybe add redirect to previous page
 - [ ] Make tags component responsive
+- [ ] After loggin redirect to dashboard if user was on a public page before
 - [ ] Give feedback when log is saved
 - [ ] Find and implement color scheme
+- [ ] Hide footer on /app/\*
 - [x] When setting start time, set end time to same day one hour later
 
 ## Features
 
-- [ ] Supporting multiple users (next-auth)
 - [ ] Add option to pause and resume stopwatch
 - [ ] Log focus with only date and duration
 - [ ] List tags (name, logs count, last log date) and rename
 - [ ] Give tags a color
 - [ ] Add streaks (days, weeks) to dashboard (and maybe to tags)
+- [x] Supporting multiple users (next-auth)
 - [x] Make chart of hours logged per day
 - [x] NavBar
 - [x] List focus logs

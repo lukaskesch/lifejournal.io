@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import { RetroactiveFocusLog } from "@/types/RetroactiveFocusLog";
 import { toMySQLDatetime } from "../../../db/db-utils";
 import { Textarea } from "../ui/textarea";
+import { useRouter } from "next/navigation";
 
 export default function RetroactiveLoggerClient({
   userTags,
@@ -21,6 +22,8 @@ export default function RetroactiveLoggerClient({
   const [finishDateTimeString, setFinishDateTimeString] = React.useState("");
   const [selectedTagsIds, setSelectedTagsIds] = React.useState<string[]>([]);
   const [description, setDescription] = React.useState("");
+
+  const router = useRouter();
 
   React.useEffect(() => {
     const now = new Date();
@@ -96,6 +99,13 @@ export default function RetroactiveLoggerClient({
     console.log("Logging focus:", focusLog);
 
     await loggedFocusCallback(focusLog);
+
+    const callbackUrl = decodeURIComponent(
+      window.location.search.split("callbackUrl=")[1],
+    );
+    if (callbackUrl) {
+      router.push(callbackUrl);
+    }
   };
 
   return (

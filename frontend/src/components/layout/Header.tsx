@@ -1,9 +1,16 @@
+"use client";
+import React from "react";
 import Link from "next/link";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions";
+import { useSession } from "next-auth/react";
+import { usePathname, useSearchParams } from "next/navigation";
 
-export default async function Header() {
-  const session = await getServerSession(authOptions);
+export default function Header() {
+  const { data: session, status } = useSession();
+
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentUrl = pathname + searchParams.toString();
+
   return (
     <header className="bg-primary text-white p-4">
       <nav className=" flex justify-between items-center">
@@ -26,6 +33,14 @@ export default async function Header() {
               <li>
                 <Link href="/app/tags" className="hover:text-gray-300">
                   Tags
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={`/app/logs/new?callbackUrl=${encodeURIComponent(currentUrl)}`}
+                  className="hover:text-gray-300"
+                >
+                  Log Time
                 </Link>
               </li>
             </>

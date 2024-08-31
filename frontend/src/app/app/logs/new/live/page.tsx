@@ -1,16 +1,16 @@
 "use server";
 
-import { db } from "../../../../../db";
+import { db } from "../../../../../../db";
 import {
   user_tags,
   user_time_log,
   user_time_log_has_tag,
   users,
-} from "../../../../../drizzle/schema";
+} from "../../../../../../drizzle/schema";
 import { eq } from "drizzle-orm/expressions";
 import { v4 as uuidv4 } from "uuid";
-import RetroactiveLoggerClient from "@/components/logging/RetroactiveLoggerClient";
-import { RetroactiveFocusLog } from "@/types/RetroactiveFocusLog";
+import { FocusLog } from "@/types/FocusLog";
+import LiveTimeLoggerClient from "@/components/logging/LiveTimeLoggerClient";
 import { headers } from "next/headers";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
@@ -32,29 +32,15 @@ export default async function LiveFocusLogPage() {
     .execute()
     .then((result) => result[0]);
 
-  async function handleLoggedFocus(
-    focusLog: RetroactiveFocusLog,
-  ): Promise<string> {
+  async function handleLoggedFocus(focusLog: FocusLog): Promise<string> {
     "use server";
     try {
-      const userTimeLogId = uuidv4();
-
-      console.log(focusLog);
-
+      const id = uuidv4();
       await db.insert(user_time_log).values({
-        id: userTimeLogId,
+        id: id,
         ...focusLog,
       });
-
-      await db.insert(user_time_log_has_tag).values(
-        focusLog.tagIds.map((tagId) => ({
-          id: uuidv4(),
-          user_time_log_id: userTimeLogId,
-          tag_id: tagId,
-        })),
-      );
-
-      return userTimeLogId;
+      return id;
     } catch (error) {
       console.error("Error inserting user_time_log", error);
       throw new Error("Error while logging focus");
@@ -70,13 +56,29 @@ export default async function LiveFocusLogPage() {
     return userTags;
   }
 
+  async function addTagsToFocusLog(focusLogId: string, tagIds: string[]) {
+    "use server";
+    try {
+      await db.insert(user_time_log_has_tag).values(
+        tagIds.map((tagId) => ({
+          id: uuidv4(),
+          user_time_log_id: focusLogId,
+          tag_id: tagId,
+        })),
+      );
+    } catch (error) {
+      console.error("Error adding tags to focus log:", error);
+    }
+  }
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-24">
       {/* {user.email} */}
-      <RetroactiveLoggerClient
+      <LiveTimeLoggerClient
         user={user}
+        loggedTimeCallback={handleLoggedFocus}
+        addTagsToFocusLogCallback={addTagsToFocusLog}
         userTags={await getUserTags()}
-        loggedFocusCallback={handleLoggedFocus}
       />
     </div>
   );

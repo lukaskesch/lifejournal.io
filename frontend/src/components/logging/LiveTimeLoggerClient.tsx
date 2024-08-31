@@ -7,6 +7,7 @@ import { toMySQLDatetime } from "../../../db/db-utils";
 import { User, UserTags } from "../../../drizzle/schema";
 import SelectTagsClient from "./SelectTagsClient";
 import { Textarea } from "../ui/textarea";
+import { useRouter } from "next/navigation";
 
 export default function LiveTimeLoggerClient({
   user,
@@ -17,13 +18,18 @@ export default function LiveTimeLoggerClient({
   user: User;
   userTags: UserTags[];
   loggedTimeCallback: (FocusLog: FocusLog) => Promise<string>;
-  addTagsToFocusLogCallback: (focusLogId: string, tagIds: string[]) => void;
+  addTagsToFocusLogCallback: (
+    focusLogId: string,
+    tagIds: string[],
+  ) => Promise<void>;
 }) {
   const [startTime, setStartTime] = React.useState<Date>();
   const [endTime, setEndTime] = React.useState<Date>();
   const [selectedTagsIds, setSelectedTagsIds] = React.useState<string[]>([]);
   const [loggedFocusId, setLoggedFocusId] = React.useState<string>();
   const [description, setDescription] = React.useState("");
+
+  const router = useRouter();
 
   React.useEffect(() => {
     const storedStartTime = localStorage.getItem("startTime");
@@ -75,13 +81,20 @@ export default function LiveTimeLoggerClient({
     stopInterval();
   }
 
-  function handleSaveTagsClick() {
+  async function handleSaveTagsClick() {
     console.log("Saving tags");
     if (!loggedFocusId) {
       console.error("No logged focus id");
       return;
     }
-    addTagsToFocusLogCallback(loggedFocusId, selectedTagsIds);
+    await addTagsToFocusLogCallback(loggedFocusId, selectedTagsIds);
+
+    const callbackUrl = decodeURIComponent(
+      window.location.search.split("callbackUrl=")[1],
+    );
+    if (callbackUrl) {
+      router.push(callbackUrl);
+    }
   }
 
   function renderContent() {
