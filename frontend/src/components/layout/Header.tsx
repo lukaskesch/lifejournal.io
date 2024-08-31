@@ -1,10 +1,18 @@
 "use client";
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { usePathname, useSearchParams } from "next/navigation";
 
 export default function Header() {
+  return (
+    <Suspense fallback={null}>
+      <InnerHeader />
+    </Suspense>
+  );
+}
+
+function InnerHeader() {
   const { data: session, status } = useSession();
 
   const pathname = usePathname();
