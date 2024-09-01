@@ -24,6 +24,7 @@
 - [ ] List tags (name, logs count, last log date) and rename
 - [ ] Give tags a color
 - [ ] Add streaks (days, weeks) to dashboard (and maybe to tags)
+- [x] Add filter to focus logs
 - [x] Password
 - [x] Supporting multiple users (next-auth)
 - [x] Make chart of hours logged per day
