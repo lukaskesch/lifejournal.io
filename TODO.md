@@ -7,23 +7,24 @@
 
 ## Improvements
 
-- [ ] Make tags component responsive
 - [ ] After loggin redirect to dashboard if user was on a public page before
 - [ ] Find and implement color scheme
 - [ ] Hide footer on /app/\*
+- [x] Make tags component responsive
 - [x] Add option to start log in the header and maybe add redirect to previous page
 - [x] When setting start time, set end time to same day one hour later
 
 ## Features
 
 - [ ] Sign up
-- [ ] Password
-- [ ] Edit and delete focus logs
+- [ ] Delete focus logs
 - [ ] Log focus with only date and duration
+- [ ] Edit focus logs
 - [ ] Add option to pause and resume stopwatch
 - [ ] List tags (name, logs count, last log date) and rename
 - [ ] Give tags a color
 - [ ] Add streaks (days, weeks) to dashboard (and maybe to tags)
+- [x] Password
 - [x] Supporting multiple users (next-auth)
 - [x] Make chart of hours logged per day
 - [x] NavBar
@@ -34,7 +35,8 @@
 
 ## Documentation
 
-- [ ] Drizzle and mysql2
 - [ ] Tailwindcss
-- [ ] Next.js
 - [ ] Shadcn
+- [ ] Next.js
+- [ ] Next-auth
+- [ ] Drizzle and mysql2

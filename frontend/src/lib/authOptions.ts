@@ -4,6 +4,7 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { eq } from "drizzle-orm";
 import { users } from "../../drizzle/schema";
 import { db } from "../../db";
+import bcrypt from "bcrypt";
 
 export const authOptions: NextAuthOptions = {
   // adapter: DrizzleAdapter(db, {
@@ -29,19 +30,18 @@ export const authOptions: NextAuthOptions = {
 
         const user = userArray[0];
 
-        // console.log(user);
         if (!user) {
           return null;
         }
 
-        // const isPasswordValid = await bcrypt.compare(
-        //   credentials.password,
-        //   user.password,
-        // );
-        //
-        // if (!isPasswordValid) {
-        //   return null;
-        // }
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password,
+          user.password,
+        );
+
+        if (!isPasswordValid) {
+          return null;
+        }
 
         return {
           id: user.id,
