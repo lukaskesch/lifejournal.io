@@ -109,7 +109,7 @@ export default function RetroactiveLoggerClient({
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col min-w-96 max-w-screen-md">
       <div className="self-center p-4">
         <Input
           type="datetime-local"
@@ -131,11 +131,12 @@ export default function RetroactiveLoggerClient({
           setSelectedTagsIds={setSelectedTagsIds}
         />
       </div>
-      <div className="self-center p-4">
+      <div className="self-stretch p-4">
         <Textarea
           placeholder="Description"
           value={description}
           onChange={(event) => setDescription(event.target.value)}
+          className="resize-none"
         />
       </div>
       <div className="self-center p-4">
