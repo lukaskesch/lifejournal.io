@@ -100,7 +100,7 @@ export default function LiveTimeLoggerClient({
   function renderContent() {
     if (startTime && endTime) {
       return (
-        <>
+        <div className="flex flex-col justify-center min-w-96 max-w-screen-md">
           <div className="self-center mb-10">
             <h1>
               You logged{" "}
@@ -118,7 +118,7 @@ export default function LiveTimeLoggerClient({
           <div className="self-center mt-10">
             <Button onClick={handleSaveTagsClick}>Add tags</Button>
           </div>
-        </>
+        </div>
       );
     }
 
