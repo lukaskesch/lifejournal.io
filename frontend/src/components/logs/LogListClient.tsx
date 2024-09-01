@@ -3,33 +3,63 @@
 import React from "react";
 import { FocusLogWithTags } from "@/types/FocusLogWithTags";
 import { TimeLoggedChart } from "./TimeLoggedChart";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { UserTags } from "../../../drizzle/schema";
 
 export default function LogListClient({
   logsWithTags,
 }: {
   logsWithTags: FocusLogWithTags[];
 }) {
-  const hours = React.useMemo(() => {
-    return Math.floor(
-      logsWithTags.reduce((acc, log) => {
-        return acc + log.duration_minutes;
-      }, 0) / 60,
-    );
+  const [tags, setTags] = React.useState<UserTags[]>([]);
+  const [selectedTagIds, setSelectedTagIds] = React.useState<string[]>([]);
+  const [filteredLogs, setFilteredLogs] =
+    React.useState<FocusLogWithTags[]>(logsWithTags);
+
+  React.useEffect(() => {
+    const allTags = logsWithTags.map((log) => log.tags).flat();
+    const uniqueTagsMapIdsObject = new Map(allTags.map((tag) => [tag.id, tag]));
+    const uniqueTags = Array.from(uniqueTagsMapIdsObject.values());
+    console.log("Unique tags", uniqueTags);
+    setTags(uniqueTags);
   }, [logsWithTags]);
+
+  React.useEffect(() => {
+    if (selectedTagIds.length === 0) {
+      setFilteredLogs(logsWithTags);
+    } else {
+      const filteredLogs = logsWithTags.filter((log) =>
+        log.tags.some((tag) => selectedTagIds.includes(tag.id)),
+      );
+      setFilteredLogs(filteredLogs);
+    }
+  }, [selectedTagIds, logsWithTags]);
+
+  const totalMinutes = React.useMemo(() => {
+    return Math.floor(
+      filteredLogs.reduce((acc, log) => {
+        return acc + log.duration_minutes;
+      }, 0),
+    );
+  }, [filteredLogs]);
 
   const numberOfLogs = React.useMemo(() => {
-    return logsWithTags.length;
-  }, [logsWithTags]);
+    return filteredLogs.length;
+  }, [filteredLogs]);
 
   const uniqueTagsCount = React.useMemo(() => {
-    const uniqueTags = new Set<string>();
-    logsWithTags.forEach((log) => {
-      log.tags.forEach((tag) => {
-        uniqueTags.add(tag.name);
-      });
-    });
-    return uniqueTags.size;
-  }, [logsWithTags]);
+    const allTags = filteredLogs.map((log) => log.tags).flat();
+    const uniqueTagsMapIdsObject = new Set(allTags.map((tag) => tag.id));
+    return uniqueTagsMapIdsObject.size;
+  }, [filteredLogs]);
 
   logsWithTags.sort((a, b) => {
     if (!a.start_time || !b.start_time) {
@@ -43,20 +73,85 @@ export default function LogListClient({
     }
     return 0;
   });
+
   return (
     <div className="flex flex-col min-h-screen m-2">
+      <div className="flex flex-row justify-between m-2">
+        <TagFilter
+          tags={tags}
+          selectedTags={selectedTagIds}
+          setSelectedTags={setSelectedTagIds}
+        />
+      </div>
       <div className="mr-4 my-4">
-        <TimeLoggedChart logsWithTags={logsWithTags} />
+        <TimeLoggedChart logsWithTags={filteredLogs} />
       </div>
       <div className="flex flex-row justify-between m-2">
         <div className="font-bold text-2xl">{numberOfLogs} logs</div>
-        <div className="font-bold text-2xl">{hours} hours</div>
+        <div className="font-bold text-2xl">
+          {Math.floor(totalMinutes / 60) > 0
+            ? Math.floor(totalMinutes / 60) + " hours"
+            : totalMinutes + " minutes"}
+        </div>
         <div className="font-bold text-2xl">{uniqueTagsCount} tags</div>
       </div>
-      {logsWithTags.map((log) => (
+      {filteredLogs.map((log) => (
         <Log key={log.id} log={log} />
       ))}
     </div>
+  );
+}
+
+function TagFilter({
+  tags,
+  selectedTags,
+  setSelectedTags,
+}: {
+  tags: UserTags[];
+  selectedTags: string[];
+  setSelectedTags: React.Dispatch<React.SetStateAction<string[]>>;
+}) {
+  const handleValueChange = (value: string) => {
+    setSelectedTags((prev) => {
+      if (prev.includes(value)) {
+        return prev.filter((tag) => tag !== value);
+      } else {
+        return [...prev, value];
+      }
+    });
+  };
+
+  const getSelectedTagNames = (selectedTagIds: string[]): string[] => {
+    return tags
+      .filter((tag) => selectedTagIds.includes(tag.id))
+      .map((tag) => tag.name);
+  };
+
+  return (
+    <Select onValueChange={handleValueChange} value={"Alle Tags"}>
+      <SelectTrigger>
+        <SelectValue>
+          {selectedTags.length === 0
+            ? "All tags"
+            : getSelectedTagNames(selectedTags).join(", ")}
+        </SelectValue>
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          {tags.map((tag) => (
+            <SelectItem
+              key={tag.id}
+              value={tag.id}
+              className={`flex items-center justify-between ${
+                selectedTags.includes(tag.id) ? "bg-primary/10 font-medium" : ""
+              }`}
+            >
+              {tag.name}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   );
 }
 
