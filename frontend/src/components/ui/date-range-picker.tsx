@@ -22,40 +22,34 @@ export function DatePickerWithRange({
   setFinishDateTime,
 }: {
   className?: string;
-  startDateTime: Date;
-  setStartDateTime: (date: Date) => void;
-  finishDateTime: Date;
-  setFinishDateTime: (date: Date) => void;
+  startDateTime: Date | undefined;
+  setStartDateTime: (date: Date | undefined) => void;
+  finishDateTime: Date | undefined;
+  setFinishDateTime: (date: Date | undefined) => void;
 }) {
-  const [selectedStartDate, setSelectedStartDate] = React.useState<
-    Date | undefined
-  >(startDateTime);
-  const [selectedFinishDate, setSelectedFinishDate] = React.useState<
-    Date | undefined
-  >(finishDateTime);
-
   const date = React.useMemo(
     () => ({
-      from: selectedStartDate,
-      to: selectedFinishDate,
+      from: startDateTime,
+      to: finishDateTime,
     }),
-    [selectedStartDate, selectedFinishDate],
+    [startDateTime, finishDateTime],
   );
 
   const setDate = React.useCallback(
     (date: DateRange | undefined) => {
       if (!date) {
-        setSelectedStartDate(undefined);
-        setSelectedFinishDate(undefined);
+        setStartDateTime(undefined);
+        setFinishDateTime(undefined);
         return;
       }
-      setSelectedStartDate(date.from);
-      setSelectedFinishDate(date.to);
 
-      if (date.from && date.to && date.from <= date.to) {
+      if (date.from) {
         const startDateTime = new Date(date.from);
         startDateTime.setHours(0, 0, 0, 0);
         setStartDateTime(startDateTime);
+      }
+
+      if (date.from && date.to && date.from <= date.to) {
         const finishDateTime = new Date(date.to);
         finishDateTime.setHours(23, 59, 59, 999);
         setFinishDateTime(finishDateTime);

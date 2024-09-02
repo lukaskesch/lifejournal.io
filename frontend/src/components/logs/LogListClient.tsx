@@ -24,10 +24,12 @@ export default function LogListClient({
   const [selectedTagIds, setSelectedTagIds] = React.useState<string[]>([]);
   const [filteredLogs, setFilteredLogs] =
     React.useState<FocusLogWithTags[]>(logsWithTags);
-  const [startDateTime, setStartDateTime] = React.useState<Date>(
+  const [startDateTime, setStartDateTime] = React.useState<Date | undefined>(
     new Date(new Date().setDate(-30)),
   );
-  const [finishDateTime, setFinishDateTime] = React.useState<Date>(new Date());
+  const [finishDateTime, setFinishDateTime] = React.useState<Date | undefined>(
+    new Date(),
+  );
 
   React.useEffect(() => {
     const allTags = logsWithTags.map((log) => log.tags).flat();
@@ -39,19 +41,25 @@ export default function LogListClient({
 
   React.useEffect(() => {
     let logs = [...logsWithTags];
+
+    // Filter by tags
     if (selectedTagIds.length !== 0) {
       logs = logs.filter((log) =>
         log.tags.some((tag) => selectedTagIds.includes(tag.id)),
       );
     }
-    if (startDateTime && finishDateTime) {
-      console.log(startDateTime, finishDateTime);
-      logs = logs.filter((log) => {
-        if (!log.start_time) return false;
-        const logDateTime = new Date(log.start_time);
-        return logDateTime >= startDateTime && logDateTime <= finishDateTime;
-      });
-    }
+
+    // Filter by date
+    const _startDateTime = new Date(
+      startDateTime ?? new Date(new Date().setDate(-30)),
+    );
+    const _finishDateTime = new Date(finishDateTime ?? new Date());
+    logs = logs.filter((log) => {
+      if (!log.start_time) return false;
+      const logDateTime = new Date(log.start_time);
+      return logDateTime >= _startDateTime && logDateTime <= _finishDateTime;
+    });
+
     setFilteredLogs(logs);
   }, [selectedTagIds, startDateTime, finishDateTime, logsWithTags]);
 
@@ -104,8 +112,8 @@ export default function LogListClient({
       <div className="mr-4 my-4">
         <TimeLoggedChart
           logsWithTags={filteredLogs}
-          startDateTime={startDateTime}
-          finishDateTime={finishDateTime}
+          startDateTime={startDateTime ?? new Date(new Date().setDate(-30))}
+          finishDateTime={finishDateTime ?? new Date()}
         />
       </div>
       <div className="flex flex-row justify-between m-2">
