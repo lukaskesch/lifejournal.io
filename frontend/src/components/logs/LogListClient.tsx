@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { UserTags } from "../../../drizzle/schema";
+import { DatePickerWithRange } from "../ui/date-range-picker";
 
 export default function LogListClient({
   logsWithTags,
@@ -23,25 +24,36 @@ export default function LogListClient({
   const [selectedTagIds, setSelectedTagIds] = React.useState<string[]>([]);
   const [filteredLogs, setFilteredLogs] =
     React.useState<FocusLogWithTags[]>(logsWithTags);
+  const [startDateTime, setStartDateTime] = React.useState<Date>(
+    new Date(new Date().setDate(-30)),
+  );
+  const [finishDateTime, setFinishDateTime] = React.useState<Date>(new Date());
 
   React.useEffect(() => {
     const allTags = logsWithTags.map((log) => log.tags).flat();
     const uniqueTagsMapIdsObject = new Map(allTags.map((tag) => [tag.id, tag]));
     const uniqueTags = Array.from(uniqueTagsMapIdsObject.values());
-    console.log("Unique tags", uniqueTags);
+    // console.log("Unique tags", uniqueTags);
     setTags(uniqueTags);
   }, [logsWithTags]);
 
   React.useEffect(() => {
-    if (selectedTagIds.length === 0) {
-      setFilteredLogs(logsWithTags);
-    } else {
-      const filteredLogs = logsWithTags.filter((log) =>
+    let logs = [...logsWithTags];
+    if (selectedTagIds.length !== 0) {
+      logs = logs.filter((log) =>
         log.tags.some((tag) => selectedTagIds.includes(tag.id)),
       );
-      setFilteredLogs(filteredLogs);
     }
-  }, [selectedTagIds, logsWithTags]);
+    if (startDateTime && finishDateTime) {
+      console.log(startDateTime, finishDateTime);
+      logs = logs.filter((log) => {
+        if (!log.start_time) return false;
+        const logDateTime = new Date(log.start_time);
+        return logDateTime >= startDateTime && logDateTime <= finishDateTime;
+      });
+    }
+    setFilteredLogs(logs);
+  }, [selectedTagIds, startDateTime, finishDateTime, logsWithTags]);
 
   const totalMinutes = React.useMemo(() => {
     return Math.floor(
@@ -76,15 +88,25 @@ export default function LogListClient({
 
   return (
     <div className="flex flex-col min-h-screen m-2">
-      <div className="flex flex-row justify-between m-2">
+      <div className="flex flex-row justify-between gap-2 m-2">
         <TagFilter
           tags={tags}
           selectedTags={selectedTagIds}
           setSelectedTags={setSelectedTagIds}
         />
+        <DatePickerWithRange
+          startDateTime={startDateTime}
+          setStartDateTime={setStartDateTime}
+          finishDateTime={finishDateTime}
+          setFinishDateTime={setFinishDateTime}
+        />
       </div>
       <div className="mr-4 my-4">
-        <TimeLoggedChart logsWithTags={filteredLogs} />
+        <TimeLoggedChart
+          logsWithTags={filteredLogs}
+          startDateTime={startDateTime}
+          finishDateTime={finishDateTime}
+        />
       </div>
       <div className="flex flex-row justify-between m-2">
         <div className="font-bold text-2xl">{numberOfLogs} logs</div>

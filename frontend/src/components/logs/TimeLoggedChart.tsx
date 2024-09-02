@@ -16,8 +16,12 @@ const chartConfig = {
 
 export function TimeLoggedChart({
   logsWithTags,
+  startDateTime,
+  finishDateTime,
 }: {
   logsWithTags: FocusLogWithTags[];
+  startDateTime: Date;
+  finishDateTime: Date;
 }) {
   const [chartData, setChartData] = React.useState<
     {
@@ -39,17 +43,17 @@ export function TimeLoggedChart({
     }
 
     function generateBaseChartData() {
-      const date = new Date();
-      date.setDate(date.getDate() - 29);
+      const date = new Date(startDateTime);
       const data = [];
 
-      for (let i = 0; i < 30; i++) {
+      while (date.getTime() <= finishDateTime.getTime()) {
         data.push({
           date: formatOutputDate(date),
           hours: 0,
         });
         date.setDate(date.getDate() + 1);
       }
+
       return data;
     }
 
@@ -71,10 +75,8 @@ export function TimeLoggedChart({
       item.hours = Math.round(item.hours * 10) / 10;
     });
 
-    console.log("Data", data);
-
     setChartData(data);
-  }, [logsWithTags]);
+  }, [logsWithTags, startDateTime, finishDateTime]);
 
   return (
     <ChartContainer
