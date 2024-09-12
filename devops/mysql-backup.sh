@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Add this file to your crontab (crontab -e) to run it periodically
+# Example: 0 * * * * /path/to/backup.sh 
+
 # Get current date and time
 current_datetime=$(date +"%Y-%m-%d_%H:%M:%S")
 
