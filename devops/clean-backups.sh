@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# 0 23 * * * /path/to/your/clean-backups.sh >> /var/log/cron/info.log 2>> /var/log/cron/error.log
+
 # S3 bucket name
 S3_BUCKET="<your-s3-bucket-name>"
 
@@ -18,6 +20,8 @@ delete_file() {
     aws s3 rm "s3://$S3_BUCKET/$file"
 }
 
+echo "Starting backup cleanup"
+
 # List all backup files
 BACKUP_FILES=$(aws s3 ls "s3://$S3_BUCKET/$BACKUP_PREFIX" --recursive | awk '{print $4}')
 
@@ -33,11 +37,15 @@ for file in $BACKUP_FILES; do
     # Apply retention policy
     if [ $age_days -le 1 ]; then
         # Keep all backups for the last day
+        echo "Keeping backup: $file"
         continue
     elif [ $age_days -le 7 ]; then
         # Keep daily backups for the last week
         if [ "${filename:11:2}" != "00" ]; then
+            echo "Deleting backup: $file"
             delete_file "$file"
+        else
+            echo "Keeping backup: $file"
         fi
     elif [ $age_days -le 30 ]; then
         # Keep weekly backups for the last month
@@ -46,16 +54,20 @@ for file in $BACKUP_FILES; do
         
         # Keep only Sunday's backup (assuming Sunday is the start of the week)
         if [ "$day_of_week" != "7" ] || [ "${filename:11:2}" != "00" ]; then
+            echo "Deleting backup: $file"
             delete_file "$file"
+        else
+            echo "Keeping backup: $file"
         fi
     else
         # Keep monthly backups for older periods
         if [ "${filename:8:2}" != "01" ] || [ "${filename:11:2}" != "00" ]; then
+            echo "Deleting backup: $file"
             delete_file "$file"
+        else
+            echo "Keeping backup: $file"
         fi
     fi
 done
 
 echo "Backup cleanup completed."
-
-#    30 23 * * * /path/to/your/clean-backups.sh >> /path/to/logfile.log 2>&1
