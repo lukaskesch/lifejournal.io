@@ -1,12 +1,38 @@
 #!/bin/bash
 
-# 0 23 * * * /path/to/your/clean-backups.sh >> /var/log/cron/info.log 2>> /var/log/cron/error.log
+# Expects the backup files to begin with a date in the format: 2024-05-01_00:00:00
 
-# S3 bucket name
-S3_BUCKET="<your-s3-bucket-name>"
+# Default values
+S3_BUCKET=""
+BACKUP_PREFIX="db-backups/"
 
-# Backup prefix in S3
-BACKUP_PREFIX="backups/"
+# Parse command-line arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --s3-bucket=*)
+        S3_BUCKET="${1#*=}"
+        shift
+        ;;
+        --backup-prefix=*)
+        BACKUP_PREFIX="${1#*=}"
+        shift
+        ;;
+        *)
+        echo "Unknown parameter: $1" >&2
+        exit 1
+        ;;
+    esac
+done
+
+# Check if required parameters are set
+if [ -z "$S3_BUCKET" ]; then
+    echo "Error: --s3-bucket parameter is required." >&2
+    echo "Usage: $0 --s3-bucket=<your-s3-bucket-name> [--backup-prefix=backups/]" >&2
+    exit 1
+fi
+
+# Ensure BACKUP_PREFIX ends with a slash
+[[ "${BACKUP_PREFIX}" != */ ]] && BACKUP_PREFIX="${BACKUP_PREFIX}/"
 
 # Get current timestamp
 CURRENT_TIME=$(date +%s)
@@ -27,9 +53,18 @@ BACKUP_FILES=$(aws s3 ls "s3://$S3_BUCKET/$BACKUP_PREFIX" --recursive | awk '{pr
 
 # Process each backup file
 for file in $BACKUP_FILES; do
-    # Extract date from filename (format: YYYY-MM-DD_HH-mm-ss.sql.gz)
+    # Extract filename from the full path
     filename=$(basename "$file")
-    file_date="${filename:0:10}"
+    
+    # Extract date from filename (format: YYYY-MM-DD_HH-mm-ss.sql.gz)
+    file_date=$(echo "$filename" | grep -oP '^\d{4}-\d{2}-\d{2}')
+    
+    # Skip files that don't match the expected date format
+    if [ -z "$file_date" ]; then
+        echo "Skipping file with invalid date format: $file" 
+        echo "Skipping file with invalid date format: $file" >> /dev/stderr
+        continue
+    fi
     
     # Calculate age in days
     age_days=$(( ($(date -d "$CURRENT_DATE" +%s) - $(date -d "$file_date" +%s)) / 86400 ))
