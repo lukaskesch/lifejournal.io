@@ -1,7 +1,19 @@
 #!/bin/bash
 
-# Add this file to your crontab (crontab -e) to run it periodically
-# Example: 0 * * * * /path/to/backup.sh >> /var/log/cron/info.log 2>> /var/log/cron/error.log
+# Usage: ./mysql-backup.sh <db_name> <db_password> <dump_dir> <s3_bucket_name> <s3_path> 
+
+# Check if all required arguments are provided
+if [ $# -ne 5 ]; then
+    echo "Usage: $0 <db_name> <db_password> <dump_dir> <s3_bucket_name> <s3_path>" >&2
+    exit 1
+fi
+
+# Assign command-line arguments to variables
+db_name="$1"
+db_password="$2"
+dump_dir="$3"
+s3_bucket_name="$4"
+s3_path="$5"
 
 echo "Starting db backup"
 
@@ -9,13 +21,12 @@ echo "Starting db backup"
 current_datetime=$(date +"%Y-%m-%d_%H:%M:%S")
 
 # Set the filename with the current datetime
-dump_dir="$HOME/mysql-dumps"
-dump_filename="mysql_dump_focus_journal_${current_datetime}.sql"
+dump_filename="${current_datetime}.sql"
 full_path="${dump_dir}/${dump_filename}"
 
 
 # Run mysqldump and capture its exit status
-mysqldump -p<your-db-password> productivity_journal > "$full_path"
+mysqldump -p"$db_password" "$db_name" > "$full_path"
 dump_status=$?
 
 # Check if mysqldump was successful
@@ -31,7 +42,7 @@ rm "$full_path"
 gzipped_path="${full_path}.gz"
 
 # Upload to S3 and capture its exit status
-aws s3 cp "$gzipped_path" s3://<your-s3-bucket-name>/some/path/
+aws s3 cp "$gzipped_path" "s3://${s3_bucket_name}/${s3_path}/"
 s3_status=$?
 
 # Check if S3 upload was successful
