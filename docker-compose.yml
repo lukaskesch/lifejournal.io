@@ -1,0 +1,10 @@
+version: "3"
+services:
+  nextjs-focus-app:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:3002:3000"
+    environment:
+      - NODE_ENV=production
