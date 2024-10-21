@@ -3,7 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { eq } from "drizzle-orm";
 import { users } from "../../drizzle/schema";
-import { db } from "../db";
+import { getDb } from "@/db";
 import bcrypt from "bcrypt";
 
 export const authOptions: NextAuthOptions = {
@@ -21,6 +21,8 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.username || !credentials?.password) {
           return null;
         }
+
+        const db = await getDb();
 
         const userArray = await db
           .select()

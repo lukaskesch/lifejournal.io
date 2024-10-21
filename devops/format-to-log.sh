@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Usage: your_command 2> >(./format-to-log.sh --log-level=ERROR >&1) | ./format-to-log.sh --log-level=INFO
+
 log_level="INFO"
 
 # Parse command line arguments

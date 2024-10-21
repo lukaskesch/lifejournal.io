@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "../../../../../db";
+import { getDb } from "@/db";
 import {
   user_tags,
   user_time_log,
@@ -23,6 +23,8 @@ export default async function LiveFocusLogPage() {
   if (!email) {
     return null;
   }
+
+  const db = await getDb();
 
   const user = await db
     .select()
