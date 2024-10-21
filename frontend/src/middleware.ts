@@ -3,7 +3,15 @@ import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 // You can add any paths you want to be public here
-const publicPathPrefixes = ["/login", "/register", "/api/auth", "/favicon"];
+const publicPathPrefixes = [
+  "/login",
+  "/register",
+  "/api/auth",
+  "/favicon",
+  "/android-chrome",
+  "/apple-touch",
+  "/site.webmanifest",
+];
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
