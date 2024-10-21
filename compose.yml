@@ -1,0 +1,10 @@
+version: "3"
+services:
+  nextjs-focus-app:
+    image: ghcr.io/lukaskesch/next-focus-journal:latest
+    ports:
+      - "127.0.0.1:3002:3000"
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - frontend/.env
