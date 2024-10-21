@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "../../../../db";
+import { db } from "../../../db";
 import { user_tags, users, UserTags } from "../../../../drizzle/schema";
 import { eq } from "drizzle-orm/expressions";
 import { v4 as uuidv4 } from "uuid";
@@ -13,7 +13,6 @@ export default async function Tags() {
   const session = await getServerSession(authOptions);
   const email = session?.user?.email;
 
-  // headers();
   if (!email) {
     return null;
   }

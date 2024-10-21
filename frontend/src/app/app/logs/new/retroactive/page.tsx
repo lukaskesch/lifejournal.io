@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "../../../../../../db";
+import { db } from "../../../../../db";
 import {
   user_tags,
   user_time_log,
@@ -11,7 +11,6 @@ import { eq } from "drizzle-orm/expressions";
 import { v4 as uuidv4 } from "uuid";
 import RetroactiveLoggerClient from "@/components/logging/RetroactiveLoggerClient";
 import { RetroactiveFocusLog } from "@/types/RetroactiveFocusLog";
-import { headers } from "next/headers";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 
@@ -19,7 +18,6 @@ export default async function LiveFocusLogPage() {
   const session = await getServerSession(authOptions);
   const email = session?.user?.email;
 
-  // headers();
   if (!email) {
     return null;
   }
@@ -33,7 +31,7 @@ export default async function LiveFocusLogPage() {
     .then((result) => result[0]);
 
   async function handleLoggedFocus(
-    focusLog: RetroactiveFocusLog,
+    focusLog: RetroactiveFocusLog
   ): Promise<string> {
     "use server";
     try {
@@ -51,7 +49,7 @@ export default async function LiveFocusLogPage() {
           id: uuidv4(),
           user_time_log_id: userTimeLogId,
           tag_id: tagId,
-        })),
+        }))
       );
 
       return userTimeLogId;
@@ -72,7 +70,6 @@ export default async function LiveFocusLogPage() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-24">
-      {/* {user.email} */}
       <RetroactiveLoggerClient
         user={user}
         userTags={await getUserTags()}

@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "../../../../db";
+import { db } from "../../../db";
 import {
   user_tags,
   user_time_log,
@@ -41,7 +41,7 @@ export default async function Logs() {
       .where(eq(user_time_log.user_id, user.id))
       .innerJoin(
         user_time_log,
-        eq(user_time_log.id, user_time_log_has_tag.user_time_log_id),
+        eq(user_time_log.id, user_time_log_has_tag.user_time_log_id)
       )
       .innerJoin(user_tags, eq(user_tags.id, user_time_log_has_tag.tag_id))
       .execute();

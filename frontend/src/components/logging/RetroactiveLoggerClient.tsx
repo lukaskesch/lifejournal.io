@@ -5,7 +5,7 @@ import SelectTagsClient from "./SelectTagsClient";
 import { User, UserTags } from "../../../drizzle/schema";
 import { Button } from "../ui/button";
 import { RetroactiveFocusLog } from "@/types/RetroactiveFocusLog";
-import { toMySQLDatetime } from "../../../db/db-utils";
+import { toMySQLDatetime } from "../../db/db-utils";
 import { Textarea } from "../ui/textarea";
 import { useRouter } from "next/navigation";
 
@@ -68,13 +68,13 @@ export default function RetroactiveLoggerClient({
   };
 
   const handleStartDateTimeChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setStartDateTimeString(event.target.value);
   };
 
   const handleFinishDateTimeChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setFinishDateTimeString(event.target.value);
   };
@@ -84,7 +84,7 @@ export default function RetroactiveLoggerClient({
     const convertedFinishDateTime = new Date(finishDateTimeString);
     const duration = Math.floor(
       (convertedFinishDateTime.getTime() - convertedStartDateTime.getTime()) /
-        60000,
+        60000
     );
 
     const focusLog: RetroactiveFocusLog = {
@@ -101,7 +101,7 @@ export default function RetroactiveLoggerClient({
     await loggedFocusCallback(focusLog);
 
     const callbackUrl = decodeURIComponent(
-      window.location.search.split("callbackUrl=")[1],
+      window.location.search.split("callbackUrl=")[1]
     );
     if (callbackUrl) {
       router.push(callbackUrl);

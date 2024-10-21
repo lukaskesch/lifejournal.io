@@ -3,7 +3,7 @@
 import { FocusLog } from "@/types/FocusLog";
 import { Button } from "../ui/button";
 import * as React from "react";
-import { toMySQLDatetime } from "../../../db/db-utils";
+import { toMySQLDatetime } from "../../db/db-utils";
 import { User, UserTags } from "../../../drizzle/schema";
 import SelectTagsClient from "./SelectTagsClient";
 import { Textarea } from "../ui/textarea";
@@ -20,7 +20,7 @@ export default function LiveTimeLoggerClient({
   loggedTimeCallback: (FocusLog: FocusLog) => Promise<string>;
   addTagsToFocusLogCallback: (
     focusLogId: string,
-    tagIds: string[],
+    tagIds: string[]
   ) => Promise<void>;
 }) {
   const [startTime, setStartTime] = React.useState<Date>();
@@ -64,7 +64,7 @@ export default function LiveTimeLoggerClient({
       start_time: toMySQLDatetime(startTime || new Date()),
       end_time: toMySQLDatetime(endTime || new Date()),
       duration_minutes: Math.floor(
-        (endTime.getTime() - startTime.getTime()) / 1000 / 60,
+        (endTime.getTime() - startTime.getTime()) / 1000 / 60
       ),
       description: description,
     })
@@ -90,7 +90,7 @@ export default function LiveTimeLoggerClient({
     await addTagsToFocusLogCallback(loggedFocusId, selectedTagsIds);
 
     const callbackUrl = decodeURIComponent(
-      window.location.search.split("callbackUrl=")[1],
+      window.location.search.split("callbackUrl=")[1]
     );
     if (callbackUrl) {
       router.push(callbackUrl);
@@ -105,7 +105,7 @@ export default function LiveTimeLoggerClient({
             <h1>
               You logged{" "}
               {Math.floor(
-                (endTime.getTime() - startTime.getTime()) / 1000 / 60,
+                (endTime.getTime() - startTime.getTime()) / 1000 / 60
               )}{" "}
               minutes 🔥
             </h1>

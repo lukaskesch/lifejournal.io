@@ -3,7 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { eq } from "drizzle-orm";
 import { users } from "../../drizzle/schema";
-import { db } from "../../db";
+import { db } from "../db";
 import bcrypt from "bcrypt";
 
 export const authOptions: NextAuthOptions = {
@@ -36,7 +36,7 @@ export const authOptions: NextAuthOptions = {
 
         const isPasswordValid = await bcrypt.compare(
           credentials.password,
-          user.password,
+          user.password
         );
 
         if (!isPasswordValid) {

@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "../../../../../../db";
+import { db } from "../../../../../db";
 import {
   user_tags,
   user_time_log,
@@ -64,7 +64,7 @@ export default async function LiveFocusLogPage() {
           id: uuidv4(),
           user_time_log_id: focusLogId,
           tag_id: tagId,
-        })),
+        }))
       );
     } catch (error) {
       console.error("Error adding tags to focus log:", error);
