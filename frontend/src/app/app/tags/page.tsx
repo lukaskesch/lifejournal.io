@@ -1,6 +1,6 @@
 "use server";
 
-import { getDb } from "@/db";
+import db from "@/db";
 import { user_tags, users, UserTags } from "../../../../drizzle/schema";
 import { eq } from "drizzle-orm/expressions";
 import { v4 as uuidv4 } from "uuid";
@@ -16,8 +16,6 @@ export default async function Tags() {
   if (!email) {
     return null;
   }
-
-  const db = await getDb();
 
   const user = await db
     .select()
