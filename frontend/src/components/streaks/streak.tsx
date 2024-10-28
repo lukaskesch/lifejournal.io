@@ -47,20 +47,16 @@ export default async function Streak({
     .orderBy(user_time_log.start_time)
     .execute();
 
-
-
   // Add two hours to the start and end dates to account for the timezone offset
   const startWeekStartDate = new Date(
     startOfWeek(startDate).getTime() + 2 * 60 * 60 * 1000
   );
-  const tomorrow = new Date(
-    endDate.getTime() + 24 * 60 * 60 * 1000
-  );
+  const tomorrow = new Date(endDate.getTime() + 24 * 60 * 60 * 1000);
   console.log(startWeekStartDate, tomorrow);
 
   const days = [];
   const numberOfDays = differenceInDays(tomorrow, startWeekStartDate);
-  console.log(numberOfDays);
+  // console.log(numberOfDays);
   let indexInLogArray = 0;
   for (let i = 0; i < numberOfDays; i++) {
     const indexDate = addDays(startWeekStartDate, i);
@@ -96,12 +92,33 @@ export default async function Streak({
     });
   }
 
-  days.forEach((day) => {
-    console.log(day.date, day.logs.length);
-  });
+  // days.forEach((day) => {
+  //   console.log(day.date, day.logs.length);
+  // });
 
-  const totalHours = Math.floor(days.reduce((acc, day) => acc + day.logs.reduce((acc, log) => acc + log.log.duration_minutes, 0), 0) / 60);
+  const totalHours = Math.floor(
+    days.reduce(
+      (acc, day) =>
+        acc + day.logs.reduce((acc, log) => acc + log.log.duration_minutes, 0),
+      0
+    ) / 60
+  );
 
+  let streak = 0;
+  let isPriorDayLogged = true;
+  for (let i = days.length - 1; i >= 0; i--) {
+    const day = days[i];
+    console.log(day, i, isPriorDayLogged, streak);
+    if (!isPriorDayLogged && !day.logs.length) {
+      break;
+    }
+    if (day.logs.length > 0) {
+      streak++;
+      isPriorDayLogged = true;
+    } else {
+      isPriorDayLogged = false;
+    }
+  }
 
   function renderDayOfWeek(weekDayNumber: number) {
     return days.map(
@@ -120,7 +137,9 @@ export default async function Streak({
 
   return (
     <div>
-      <h2>#{tag[0].name.name} ({totalHours}h)</h2>
+      <h2>
+        #{tag[0].name.name} ({totalHours}h, {streak}d)
+      </h2>
       <table className="border-separate ">
         <tbody className="">
           <tr className="">
