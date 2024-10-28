@@ -96,19 +96,12 @@ export default async function Streak({
   //   console.log(day.date, day.logs.length);
   // });
 
-  const totalHours = Math.floor(
-    days.reduce(
-      (acc, day) =>
-        acc + day.logs.reduce((acc, log) => acc + log.log.duration_minutes, 0),
-      0
-    ) / 60
-  );
-
+  // Streak calculation
   let streak = 0;
   let isPriorDayLogged = true;
   for (let i = days.length - 1; i >= 0; i--) {
     const day = days[i];
-    console.log(day, i, isPriorDayLogged, streak);
+    // console.log(day, i, isPriorDayLogged, streak);
     if (!isPriorDayLogged && !day.logs.length) {
       break;
     }
@@ -120,19 +113,45 @@ export default async function Streak({
     }
   }
 
+  // Intensity calculation
+  const minutesPerDay = days
+    .map((day) =>
+      day.logs.reduce((acc, log) => acc + log.log.duration_minutes, 0)
+    )
+    .filter((minutes) => minutes > 0)
+    .sort((a, b) => a - b);
+  const percentile20th = minutesPerDay[Math.floor(minutesPerDay.length * 0.2)];
+  const percentile40th = minutesPerDay[Math.floor(minutesPerDay.length * 0.4)];
+  const percentile60th = minutesPerDay[Math.floor(minutesPerDay.length * 0.6)];
+  const percentile80th = minutesPerDay[Math.floor(minutesPerDay.length * 0.8)];
+  console.log(minutesPerDay);
+
+  const totalHours = Math.floor(
+    minutesPerDay.reduce((acc, minutes) => acc + minutes, 0) / 60
+  );
+
   function renderDayOfWeek(weekDayNumber: number) {
     return days.map(
       (day, index) =>
         index % 7 === weekDayNumber && (
           <td
             key={index}
-            className={`w-4 h-4 rounded-sm m-[1.5px] ${
-              day.logs.length > 0 ? "bg-green-500" : "bg-gray-500"
-            }`}>
+            className={`w-4 h-4 rounded-sm m-[1.5px] ${getIntensityClass(
+              day.logs.reduce((acc, log) => acc + log.log.duration_minutes, 0)
+            )}`}>
             {/* {day.logs.length} */}
           </td>
         )
     );
+  }
+
+  function getIntensityClass(minutes: number) {
+    if (minutes === 0) return "bg-gray-500";
+    if (minutes < percentile20th) return "bg-green-300";
+    if (minutes < percentile40th) return "bg-green-400";
+    if (minutes < percentile60th) return "bg-green-500";
+    if (minutes < percentile80th) return "bg-green-600";
+    return "bg-green-700";
   }
 
   return (
