@@ -159,38 +159,42 @@ export default async function Streak({
       <h2>
         #{tag[0].name.name} ({totalHours}h, {streak}d)
       </h2>
-      <table className="border-separate ">
-        <tbody className="">
-          <tr className="">
-            <th></th>
-            {renderDayOfWeek(0)}
-          </tr>
-          <tr>
-            <th className="text-[0.5rem] pr-1">Mon</th>
-            {renderDayOfWeek(1)}
-          </tr>
-          <tr>
-            <th></th>
-            {renderDayOfWeek(2)}
-          </tr>
-          <tr>
-            <th className="text-[0.5rem] pr-1">Wed</th>
-            {renderDayOfWeek(3)}
-          </tr>
-          <tr>
-            <th></th>
-            {renderDayOfWeek(4)}
-          </tr>
-          <tr>
-            <th className="text-[0.5rem] pr-1">Fri</th>
-            {renderDayOfWeek(5)}
-          </tr>
-          <tr>
-            <th></th>
-            {renderDayOfWeek(6)}
-          </tr>
-        </tbody>
-      </table>
+      {/* TODO: MEASURE THE WIDTH OF the screen to adjust the max-w of the table */}
+      {/* TODO: Automatically scroll to the rightmost day of the streak */}
+      <div className="overflow-x-scroll max-w-[300px]">
+        <table className="border-separate w-[1000px] ">
+          <tbody className="">
+            <tr className="">
+              <th></th>
+              {renderDayOfWeek(0)}
+            </tr>
+            <tr>
+              <th className="text-[0.5rem] pr-1">Mon</th>
+              {renderDayOfWeek(1)}
+            </tr>
+            <tr>
+              <th></th>
+              {renderDayOfWeek(2)}
+            </tr>
+            <tr>
+              <th className="text-[0.5rem] pr-1">Wed</th>
+              {renderDayOfWeek(3)}
+            </tr>
+            <tr>
+              <th></th>
+              {renderDayOfWeek(4)}
+            </tr>
+            <tr>
+              <th className="text-[0.5rem] pr-1">Fri</th>
+              {renderDayOfWeek(5)}
+            </tr>
+            <tr>
+              <th></th>
+              {renderDayOfWeek(6)}
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
