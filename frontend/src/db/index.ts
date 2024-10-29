@@ -7,14 +7,20 @@ const isBuildProcess = process.env.NODE_ENV === 'production' && process.env.NEXT
 let db: ReturnType<typeof drizzle> | null = null;
 
 if (!isBuildProcess) {
-  const connection = await mysql.createConnection({
+  // Create a connection pool instead of a single connection
+  const pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    enableKeepAlive: true, // Enable keep-alive
+    keepAliveInitialDelay: 0 // Immediately start keep-alive
   });
 
-  db = drizzle(connection);
+  db = drizzle(pool);
 }
 
 export default db;
