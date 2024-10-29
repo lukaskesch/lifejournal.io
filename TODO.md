@@ -7,6 +7,8 @@
 
 ## Improvements
 
+- [ ] Have a now button for the end datetime for the retroactive logger
+- [ ] Have loading animations / transitions (probably suspense)
 - [ ] After loggin redirect to dashboard if user was on a public page before
 - [ ] Find and implement color scheme
 - [ ] Hide footer on /app/\*
@@ -16,6 +18,9 @@
 
 ## Features
 
+- [ ] Have a tag where you give in to it (e.g. eating unhealthy) and where you can resist it
+- [ ] Hoover on the calendar view (date, logs)
+- [ ] Daily note(s) which you also get on hoover on the streaks
 - [ ] Sign up
 - [ ] Delete focus logs
 - [ ] Log focus with only date and duration
@@ -23,8 +28,8 @@
 - [ ] Add option to pause and resume stopwatch
 - [ ] List tags (name, logs count, last log date) and rename
 - [ ] Give tags a color
-- [ ] Add streaks (days, weeks) to dashboard (and maybe to tags)
-- [ ] Have a calander view of focus logs and or tags
+- [x] Add streaks (days, weeks) to dashboard (and maybe to tags)
+- [x] Have a calander view of focus logs and or tags
 - [x] Add date range filter to focus logs
 - [x] Add tag filter to focus logs
 - [x] Password
