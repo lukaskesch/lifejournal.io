@@ -1,6 +1,5 @@
 "use client";
 
-
 import React from "react";
 import { UserTags, UserTimeLog } from "../../../drizzle/schema";
 
@@ -26,27 +25,34 @@ export default function StreakClient({
     percentile60th: number;
     percentile80th: number;
   };
-  }) {
-  
+}) {
+  const [hoverDay, setHoverDay] = React.useState<string | undefined>(undefined);
   const tableWrapperRef = React.useRef<HTMLTableElement>(null);
-  
+
   React.useLayoutEffect(() => {
     // Update the table's scroll position to the rightmost day of the streak
     if (tableWrapperRef.current) {
       tableWrapperRef.current.scrollLeft = tableWrapperRef.current?.scrollWidth;
     }
   }, []);
-  
+
   function renderDayOfWeek(weekDayNumber: number) {
+    console.log(days);
     return days.map(
       (day, index) =>
         index % 7 === weekDayNumber && (
           <td
             key={index}
-            className={`w-4 h-4 rounded-sm m-[1.5px] ${getIntensityClass(
+            onMouseEnter={() => setHoverDay(`${weekDayNumber}-${index}`)}
+            onMouseLeave={() => setHoverDay(undefined)}
+            className={`w-4 h-4 rounded-sm m-[1.5px] relative ${getIntensityClass(
               day.logs.reduce((acc, log) => acc + log.log.duration_minutes, 0)
             )}`}>
-            {/* {day.logs.length} */}
+            {hoverDay === `${weekDayNumber}-${index}` && (
+              <div className="absolute top-[16px] z-50 left-0">
+                {day.date.toLocaleDateString("de-DE")}
+              </div>
+            )}
           </td>
         )
     );
@@ -66,9 +72,8 @@ export default function StreakClient({
       <h2>
         #{tag.name} ({totalHours}h, {streak}d)
       </h2>
-      <div className={`overflow-x-scroll`}
-        ref={tableWrapperRef}>
-        <table className="border-separate w-[1000px] ">
+      <div className={`overflow-x-scroll`} ref={tableWrapperRef}>
+        <table className="border-separate w-[1000px]">
           <tbody className="">
             <tr className="">
               <th></th>
