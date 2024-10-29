@@ -14,6 +14,7 @@ import {
   startOfWeek,
 } from "date-fns";
 import { mySQLDateToDate } from "@/lib/date-utils";
+import StreakClient from "./streak-client";
 
 export default async function Streak({
   tagId,
@@ -26,9 +27,9 @@ export default async function Streak({
 }) {
   if (!db) return null;
 
-  const tag = await db
+  const tags = await db
     .select({
-      name: user_tags,
+      tag: user_tags,
     })
     .from(user_tags)
     .where(eq(user_tags.id, tagId))
@@ -124,77 +125,24 @@ export default async function Streak({
   const percentile40th = minutesPerDay[Math.floor(minutesPerDay.length * 0.4)];
   const percentile60th = minutesPerDay[Math.floor(minutesPerDay.length * 0.6)];
   const percentile80th = minutesPerDay[Math.floor(minutesPerDay.length * 0.8)];
-  console.log(minutesPerDay);
 
   const totalHours = Math.floor(
     minutesPerDay.reduce((acc, minutes) => acc + minutes, 0) / 60
   );
 
-  function renderDayOfWeek(weekDayNumber: number) {
-    return days.map(
-      (day, index) =>
-        index % 7 === weekDayNumber && (
-          <td
-            key={index}
-            className={`w-4 h-4 rounded-sm m-[1.5px] ${getIntensityClass(
-              day.logs.reduce((acc, log) => acc + log.log.duration_minutes, 0)
-            )}`}>
-            {/* {day.logs.length} */}
-          </td>
-        )
-    );
-  }
-
-  function getIntensityClass(minutes: number) {
-    if (minutes === 0) return "bg-gray-500";
-    if (minutes < percentile20th) return "bg-green-300";
-    if (minutes < percentile40th) return "bg-green-400";
-    if (minutes < percentile60th) return "bg-green-500";
-    if (minutes < percentile80th) return "bg-green-600";
-    return "bg-green-700";
-  }
 
   return (
-    <div>
-      <h2>
-        #{tag[0].name.name} ({totalHours}h, {streak}d)
-      </h2>
-      {/* TODO: MEASURE THE WIDTH OF the screen to adjust the max-w of the table */}
-      {/* TODO: Automatically scroll to the rightmost day of the streak */}
-      <div className="overflow-x-scroll max-w-[300px]">
-        <table className="border-separate w-[1000px] ">
-          <tbody className="">
-            <tr className="">
-              <th></th>
-              {renderDayOfWeek(0)}
-            </tr>
-            <tr>
-              <th className="text-[0.5rem] pr-1">Mon</th>
-              {renderDayOfWeek(1)}
-            </tr>
-            <tr>
-              <th></th>
-              {renderDayOfWeek(2)}
-            </tr>
-            <tr>
-              <th className="text-[0.5rem] pr-1">Wed</th>
-              {renderDayOfWeek(3)}
-            </tr>
-            <tr>
-              <th></th>
-              {renderDayOfWeek(4)}
-            </tr>
-            <tr>
-              <th className="text-[0.5rem] pr-1">Fri</th>
-              {renderDayOfWeek(5)}
-            </tr>
-            <tr>
-              <th></th>
-              {renderDayOfWeek(6)}
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <StreakClient
+      tag={tags[0].tag}
+      days={days}
+      totalHours={totalHours}
+      streak={streak}
+      percentiles={{
+        percentile20th,
+        percentile40th,
+        percentile60th,
+        percentile80th,
+      }}
+    />
   );
 }

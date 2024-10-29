@@ -10,7 +10,7 @@ import {
   unique,
   varchar,
 } from "drizzle-orm/mysql-core";
-import { InferModel, sql } from "drizzle-orm";
+import { InferSelectModel, sql } from "drizzle-orm";
 import {} from "drizzle-orm/mysql-core";
 import type { AdapterAccount } from "next-auth/adapters";
 
@@ -30,7 +30,7 @@ export const user_tags = mysqlTable(
   },
 );
 
-export type UserTags = InferModel<typeof user_tags>;
+export type UserTags = InferSelectModel<typeof user_tags>;
 
 export const user_time_log = mysqlTable(
   "user_time_log",
@@ -54,7 +54,7 @@ export const user_time_log = mysqlTable(
   },
 );
 
-export type UserTimeLog = InferModel<typeof user_time_log>;
+export type UserTimeLog = InferSelectModel<typeof user_time_log>;
 
 export const user_time_log_has_tag = mysqlTable(
   "user_time_log_has_tag",
@@ -77,7 +77,7 @@ export const user_time_log_has_tag = mysqlTable(
   },
 );
 
-export type UserTimeLogHasTag = InferModel<typeof user_time_log_has_tag>;
+export type UserTimeLogHasTag = InferSelectModel<typeof user_time_log_has_tag>;
 
 export const users = mysqlTable(
   "users",
@@ -100,7 +100,7 @@ export const users = mysqlTable(
   },
 );
 
-export type User = InferModel<typeof users>;
+export type User = InferSelectModel<typeof users>;
 
 export const accounts = mysqlTable(
   "account",
