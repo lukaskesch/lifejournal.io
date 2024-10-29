@@ -18,7 +18,7 @@
 
 ## Features
 
-- [ ] Have a tag where you give in to it (e.g. eating unhealthy) and where you can resist it
+- [ ] Have a tag where you give in to it (e.g. eating unhealthy) and where you can resist it and write a note on why you gave in or how you resisted
 - [ ] Hoover on the calendar view (date, logs)
 - [ ] Daily note(s) which you also get on hoover on the streaks
 - [ ] Sign up
