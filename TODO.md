@@ -24,6 +24,7 @@
 - [ ] Sign up
 - [ ] Delete focus logs
 - [ ] Log focus with only date and duration
+- [ ] Get notified if you have the live logger active if it should continue (e.g. every hour)
 - [ ] Edit focus logs
 - [ ] Add option to pause and resume stopwatch
 - [ ] List tags (name, logs count, last log date) and rename
