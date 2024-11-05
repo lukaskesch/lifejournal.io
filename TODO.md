@@ -1,6 +1,6 @@
 ## Bugs
 
-- [ ] Stopwatch hh:m:ss bug when minutes is like 0[1-9]
+- [x] Stopwatch hh:m:ss bug when minutes is like 0[1-9]
 - [x] Long backgrounded tab gets dropped. Maybe use `localStorage` to store start time
 - [x] Don't cache server components
 - [x] Fix stopwatch > 1 hour
