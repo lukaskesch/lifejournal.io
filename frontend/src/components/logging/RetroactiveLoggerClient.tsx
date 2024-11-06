@@ -8,6 +8,7 @@ import { RetroactiveFocusLog } from "@/types/RetroactiveFocusLog";
 import { toMySQLDatetime } from "../../db/db-utils";
 import { Textarea } from "../ui/textarea";
 import { useRouter } from "next/navigation";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const formatDateTimeLocalToString = (date: Date): string => {
   const year = date.getFullYear();
@@ -33,7 +34,7 @@ const formatStringToDateTimeLocal = (dateString: string): Date => {
   return newDate;
 };
 
-const offsets = [
+const durations = [
   { name: "15 min", offset: 15 * 60 * 1000 },
   { name: "30 min", offset: 30 * 60 * 1000 },
   { name: "45 min", offset: 45 * 60 * 1000 },
@@ -64,9 +65,16 @@ export default function RetroactiveLoggerClient({
   const [selectedTagsIds, setSelectedTagsIds] = React.useState<string[]>([]);
   const [description, setDescription] = React.useState("");
 
+  const durationInMinutes = React.useMemo(() => {
+    return Math.floor(
+      (new Date(finishDateTimeString).getTime() -
+        new Date(startDateTimeString).getTime()) /
+        60000
+    );
+  }, [finishDateTimeString, startDateTimeString]);
+
   const router = useRouter();
 
- 
   const handleLogTime = async () => {
     const convertedStartDateTime = new Date(startDateTimeString);
     const convertedFinishDateTime = new Date(finishDateTimeString);
@@ -103,11 +111,18 @@ export default function RetroactiveLoggerClient({
           <Input
             type="datetime-local"
             value={startDateTimeString}
-            onChange={event=>setStartDateTimeString(event.target.value)}
+            onChange={(event) => {
+              setStartDateTimeString(event.target.value);
+              const newDate = formatStringToDateTimeLocal(event.target.value);
+              newDate.setTime(newDate.getTime() + 1 * 60 * 60 * 1000);
+              setFinishDateTimeString(
+                formatDateTimeLocalToString(newDate)
+              );
+            }}
           />
         </div>
         <div className="flex flex-row pt-6">
-          {offsets.map((offset) => (
+          {durations.map((offset) => (
             <div
               key={offset.name}
               className="p-2 cursor-pointer hover:bg-gray-100 rounded-md"
@@ -115,6 +130,10 @@ export default function RetroactiveLoggerClient({
                 const newDate = new Date(startDateTimeString);
                 newDate.setTime(newDate.getTime() - offset.offset);
                 setStartDateTimeString(formatDateTimeLocalToString(newDate));
+                newDate.setTime(newDate.getTime() + 1 * 60 * 60 * 1000);
+                setFinishDateTimeString(
+                  formatDateTimeLocalToString(newDate)
+                );
               }}>
               -{offset.name}
             </div>
@@ -132,28 +151,69 @@ export default function RetroactiveLoggerClient({
   if (!isFinishDateTimeChosen) {
     // TODO: Add tab for selecting duration
     return (
-      <div className="flex flex-col min-w-96 max-w-screen-md items-center">
+      <div className="flex flex-col min-w-96 min-h-72 max-w-screen-md items-center">
+        <Tabs defaultValue="duration" className="w-full flex flex-col items-center">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="duration">Duration</TabsTrigger>
+            <TabsTrigger value="datetime">Datetime</TabsTrigger>
+          </TabsList>
+          <TabsContent value="duration">
+            <div className="pt-6">
+              <Input
+                type="number"
+                value={durationInMinutes}
+                onChange={(event) => {
+                  const newDuration = parseInt(event.target.value);
+                  const newFinishTime = new Date(
+                    new Date(startDateTimeString).getTime() +
+                      newDuration * 60000
+                  );
+                  setFinishDateTimeString(
+                    formatDateTimeLocalToString(newFinishTime)
+                  );
+                }}
+              />
+            </div>
+            <div className="flex flex-row self-center pt-6">
+              {durations.map((duration) => (
+                <div
+                  key={duration.name}
+                  className="p-2 cursor-pointer hover:bg-gray-100 rounded-md"
+                  onClick={() => {
+                    const newFinishTime = new Date(
+                      new Date(startDateTimeString).getTime() +
+                        duration.offset
+                    );
+                    setFinishDateTimeString(
+                      formatDateTimeLocalToString(newFinishTime)
+                    );
+                  }}>
+                  {duration.name}
+                </div>
+              ))}
+            </div>
+            <div className="pt-6 self-center">
+              End: {new Date(finishDateTimeString).toLocaleString("de-DE")}
+            </div>
+          </TabsContent>
+          <TabsContent value="datetime">
+            <div className="pt-6">
+              <Input
+                type="datetime-local"
+                value={finishDateTimeString}
+                onChange={(event) =>
+                  setFinishDateTimeString(event.target.value)
+                }
+              />
+            </div>
+            <div className="pt-6">Duration: {durationInMinutes} min</div>
+          </TabsContent>
+        </Tabs>
+
         {/* <div>
           Start: {new Date(startDateTimeString).toLocaleString("de-DE")}
         </div> */}
-        <div className="">
-          <Input
-            type="datetime-local"
-            value={finishDateTimeString}
-            onChange={(event) => setFinishDateTimeString(event.target.value)}
-          />
-        </div>
-        <div className="pt-6">
-          <div>
-            Duration:{" "}
-            {Math.floor(
-              (new Date(finishDateTimeString).getTime() -
-                new Date(startDateTimeString).getTime()) /
-                60000
-            )}{" "}
-            minutes
-          </div>
-        </div>
+
         <div className="pt-6">
           <Button onClick={() => setIsFinishDateTimeChosen(true)}>
             Set end time
