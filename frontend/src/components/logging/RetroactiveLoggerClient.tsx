@@ -149,7 +149,6 @@ export default function RetroactiveLoggerClient({
   }
 
   if (!isFinishDateTimeChosen) {
-    // TODO: Add tab for selecting duration
     return (
       <div className="flex flex-col min-w-96 min-h-72 max-w-screen-md items-center">
         <Tabs defaultValue="duration" className="w-full flex flex-col items-center">
