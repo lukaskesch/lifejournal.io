@@ -7,7 +7,6 @@
 
 ## Improvements
 
-- [ ] Have a now button for the end datetime for the retroactive logger
 - [ ] Have loading animations / transitions (probably suspense)
 - [ ] After loggin redirect to dashboard if user was on a public page before
 - [ ] Find and implement color scheme

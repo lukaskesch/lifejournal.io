@@ -23,7 +23,7 @@ function InnerHeader() {
     <header className="bg-primary text-white p-4">
       <nav className=" flex justify-between items-center">
         <Link href="/" className="text-xl font-bold">
-          My Focus Journal
+          Focus Journal
         </Link>
         <ul className="flex space-x-4">
           {session ? (
