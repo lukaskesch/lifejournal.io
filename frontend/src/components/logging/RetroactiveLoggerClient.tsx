@@ -115,9 +115,7 @@ export default function RetroactiveLoggerClient({
               setStartDateTimeString(event.target.value);
               const newDate = formatStringToDateTimeLocal(event.target.value);
               newDate.setTime(newDate.getTime() + 1 * 60 * 60 * 1000);
-              setFinishDateTimeString(
-                formatDateTimeLocalToString(newDate)
-              );
+              setFinishDateTimeString(formatDateTimeLocalToString(newDate));
             }}
           />
         </div>
@@ -131,9 +129,7 @@ export default function RetroactiveLoggerClient({
                 newDate.setTime(newDate.getTime() - offset.offset);
                 setStartDateTimeString(formatDateTimeLocalToString(newDate));
                 newDate.setTime(newDate.getTime() + 1 * 60 * 60 * 1000);
-                setFinishDateTimeString(
-                  formatDateTimeLocalToString(newDate)
-                );
+                setFinishDateTimeString(formatDateTimeLocalToString(newDate));
               }}>
               -{offset.name}
             </div>
@@ -151,7 +147,9 @@ export default function RetroactiveLoggerClient({
   if (!isFinishDateTimeChosen) {
     return (
       <div className="flex flex-col min-w-96 min-h-72 max-w-screen-md items-center">
-        <Tabs defaultValue="duration" className="w-full flex flex-col items-center">
+        <Tabs
+          defaultValue="duration"
+          className="w-full flex flex-col items-center">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="duration">Duration</TabsTrigger>
             <TabsTrigger value="datetime">Datetime</TabsTrigger>
@@ -180,8 +178,7 @@ export default function RetroactiveLoggerClient({
                   className="p-2 cursor-pointer hover:bg-gray-100 rounded-md"
                   onClick={() => {
                     const newFinishTime = new Date(
-                      new Date(startDateTimeString).getTime() +
-                        duration.offset
+                      new Date(startDateTimeString).getTime() + duration.offset
                     );
                     setFinishDateTimeString(
                       formatDateTimeLocalToString(newFinishTime)
@@ -204,6 +201,18 @@ export default function RetroactiveLoggerClient({
                   setFinishDateTimeString(event.target.value)
                 }
               />
+            </div>
+            <div className="flex flex-row  self-center pt-6">
+              <div
+                className="p-2 cursor-pointer hover:bg-gray-100 rounded-md"
+                onClick={() => {
+                  const newFinishTime = new Date();
+                  setFinishDateTimeString(
+                    formatDateTimeLocalToString(newFinishTime)
+                  );
+                }}>
+                now
+              </div>
             </div>
             <div className="pt-6">Duration: {durationInMinutes} min</div>
           </TabsContent>
