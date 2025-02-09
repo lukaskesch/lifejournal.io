@@ -7,6 +7,7 @@
 
 ## Improvements
 
+- [ ] On streak page also show percent of days completed since first log in the streak timeline
 - [ ] Have loading animations / transitions (probably suspense)
 - [ ] After loggin redirect to dashboard if user was on a public page before
 - [ ] Find and implement color scheme

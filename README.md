@@ -1,1 +1,1 @@
-# procuctivity-journal
+# Focus Journal
