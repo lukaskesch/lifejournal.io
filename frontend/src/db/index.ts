@@ -14,7 +14,7 @@ if (!isBuildProcess) {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     waitForConnections: true,
-    connectionLimit: 10,
+    connectionLimit: 20,
     queueLimit: 0,
     enableKeepAlive: true, // Enable keep-alive
     keepAliveInitialDelay: 0 // Immediately start keep-alive

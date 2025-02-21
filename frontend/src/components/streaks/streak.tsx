@@ -53,12 +53,9 @@ export default async function Streak({
     startOfWeek(startDate).getTime() + 2 * 60 * 60 * 1000
   );
   const tomorrow = new Date(endDate.getTime() + 24 * 60 * 60 * 1000);
-  console.log(startWeekStartDate, tomorrow);
 
   const days = [];
   const numberOfDays = differenceInDays(tomorrow, startWeekStartDate);
-  // console.log(numberOfDays);
-  let indexInLogArray = 0;
   for (let i = 0; i < numberOfDays; i++) {
     const indexDate = addDays(startWeekStartDate, i);
     const beginningOfDay = new Date(
@@ -92,10 +89,6 @@ export default async function Streak({
       }),
     });
   }
-
-  // days.forEach((day) => {
-  //   console.log(day.date, day.logs.length);
-  // });
 
   // Streak calculation
   let streak = 0;

@@ -37,7 +37,6 @@ export default function StreakClient({
   }, []);
 
   function renderDayOfWeek(weekDayNumber: number) {
-    console.log(days);
     return days.map(
       (day, index) =>
         index % 7 === weekDayNumber && (
@@ -68,11 +67,11 @@ export default function StreakClient({
   }
 
   return (
-    <div>
+    <div className="">
       <h2>
         #{tag.name} ({totalHours}h, {streak}d)
       </h2>
-      <div className={`overflow-x-auto`} ref={tableWrapperRef}>
+      <div className={`overflow-x-scroll max-w-[90vw]`} ref={tableWrapperRef}>
         <table className="border-separate w-[1000px]">
           <tbody className="">
             <tr className="">
