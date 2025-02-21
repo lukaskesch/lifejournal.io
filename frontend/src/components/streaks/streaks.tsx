@@ -2,7 +2,7 @@ import Streak from "./streak";
 
 export default async function Streaks({}) {
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className="flex flex-col items-center gap-10">
       {/* Exercise */}
       <Streak tagId="1b73dd00-8797-470b-a2a3-b8c58228c656" />
 
