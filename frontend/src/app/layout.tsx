@@ -9,8 +9,8 @@ import GoogleAnalyticsWrapper from "@/components/GoogleAnalyticsWrapper";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Focus Journal",
-  description: "A simple journal for tracking your focus time.",
+  title: "Life Journal",
+  description: "A simple journal for tracking your life.",
 };
 
 export default function RootLayout({
@@ -22,8 +22,6 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Focus Journal</title>
-        <meta name="description" content="A simple journal for tracking your focus time." />
         <link
           rel="apple-touch-icon"
           sizes="180x180"

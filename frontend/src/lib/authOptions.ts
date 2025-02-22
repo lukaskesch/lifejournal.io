@@ -1,15 +1,11 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { eq } from "drizzle-orm";
 import { users } from "../../drizzle/schema";
 import db from "@/db";
 import bcrypt from "bcrypt";
 
 export const authOptions: NextAuthOptions = {
-  // adapter: DrizzleAdapter(db, {
-  //   usersTable: users,
-  // }),
   providers: [
     CredentialsProvider({
       name: "Credentials",

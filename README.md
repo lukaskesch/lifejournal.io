@@ -1,1 +1,1 @@
-# Focus Journal
+# Life Journal
