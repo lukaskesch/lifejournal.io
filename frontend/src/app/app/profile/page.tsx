@@ -1,4 +1,8 @@
 export default function Profile() {
-  const unusedVariable = "unused";
-  return <div>Hello World</div>;
+  return <div>Member since: </div>;
 }
+
+// Member since:
+// # Activities logged
+// # Habits checked
+// # Diary questions answered

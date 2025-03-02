@@ -25,7 +25,7 @@ export default function Page({}) {
       <div className="p-4">
         <Button
           onClick={() => {
-            router.push(`/app/logs/new/live?callbackUrl=${callbackUrl}`);
+            router.push(`/app/activities/new/live?callbackUrl=${callbackUrl}`);
           }}
         >
           Start Live Logger
@@ -34,7 +34,9 @@ export default function Page({}) {
       <div className="p-4">
         <Button
           onClick={() => {
-            router.push(`/app/logs/new/retroactive?callbackUrl=${callbackUrl}`);
+            router.push(
+              `/app/activities/new/retroactive?callbackUrl=${callbackUrl}`,
+            );
           }}
         >
           Log Retroactively

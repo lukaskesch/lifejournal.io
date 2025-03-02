@@ -14,6 +14,9 @@ import {
 } from "@/components/ui/select";
 import { DatePickerWithRange } from "../ui/date-range-picker";
 import { UserTagSelect } from "@/types/database-types";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 export default function LogListClient({
   logsWithTags,
@@ -30,6 +33,10 @@ export default function LogListClient({
   const [finishDateTime, setFinishDateTime] = React.useState<Date | undefined>(
     new Date()
   );
+
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentUrl = pathname + searchParams.toString();
 
   React.useEffect(() => {
     const allTags = logsWithTags.map((log) => log.tags).flat();
@@ -96,6 +103,18 @@ export default function LogListClient({
 
   return (
     <div className="flex flex-col min-h-screen m-2">
+      <div className="flex flex-row justify-between gap-2 m-2">
+        <Link href="/app/activities/tags" className="hover:text-gray-300">
+          Manage Tags
+        </Link>
+        <Link
+          href={`/app/activities/new?callbackUrl=${encodeURIComponent(
+            currentUrl
+          )}`}
+          className="hover:text-gray-300">
+          Log Time
+        </Link>
+      </div>
       <div className="flex flex-row justify-between gap-2 m-2">
         <TagFilter
           tags={tags}

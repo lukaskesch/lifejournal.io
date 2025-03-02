@@ -16,10 +16,6 @@ export default function Header() {
 function InnerHeader() {
   const { data: session, status } = useSession();
 
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const currentUrl = pathname + searchParams.toString();
-
   return (
     <header className="bg-primary text-white p-4">
       <nav className=" flex justify-between items-center">
@@ -35,33 +31,20 @@ function InnerHeader() {
                   Dashboard
                 </Link>
               </li>
+
               <li>
-                <Link href="/app/diary/entries" className="hover:text-gray-300">
-                  Entries
+                <Link href="/app/activities" className="hover:text-gray-300">
+                  Activities
                 </Link>
               </li>
               <li>
-                <Link href="/app/diary/questions" className="hover:text-gray-300">
-                  Questions
+                <Link href="/app/diary" className="hover:text-gray-300">
+                  Diary
                 </Link>
               </li>
               <li>
-                <Link href="/app/logs" className="hover:text-gray-300">
-                  Logs
-                </Link>
-              </li>
-              <li>
-                <Link href="/app/tags" className="hover:text-gray-300">
-                  Tags
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href={`/app/logs/new?callbackUrl=${encodeURIComponent(
-                    currentUrl
-                  )}`}
-                  className="hover:text-gray-300">
-                  Log Time
+                <Link href="/app/habits" className="hover:text-gray-300">
+                  Habits
                 </Link>
               </li>
             </>

@@ -37,8 +37,6 @@ export default async function LiveFocusLogPage() {
     try {
       const userTimeLogId = uuidv4();
 
-      console.log(focusLog);
-
       await db.insert(userTimeLog).values({
         id: userTimeLogId,
         ...focusLog,
