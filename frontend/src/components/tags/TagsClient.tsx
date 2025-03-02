@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { userTags } from "@/types/schema";
 import {
   Dialog,
   DialogContent,
@@ -32,7 +31,22 @@ export default function TagsClient({
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
-      {tags && tags.map((tag) => <div key={tag.id}>{tag.name}</div>)}
+      <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
+        {tags &&
+          tags
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((tag) => (
+              <div key={tag.id} className=" p-4 rounded-md">
+                <div className="text-lg">{tag.name}</div>
+                <div className="text-sm text-gray-500">
+                  Last used: 28/02/2025
+                </div>
+                <div className="text-sm text-gray-500">
+                  Time logged: 10 hours
+                </div>
+              </div>
+            ))}
+      </div>
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogTrigger asChild>
           <div className="m-4">
