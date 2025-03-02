@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { usePathname, useSearchParams } from "next/navigation";
 
+
 export default function Header() {
   return (
     <Suspense fallback={null}>
@@ -25,12 +26,23 @@ function InnerHeader() {
         <Link href="/" className="text-xl font-bold">
           Life Journal
         </Link>
+
         <ul className="flex space-x-4">
           {session ? (
             <>
               <li>
                 <Link href="/app" className="hover:text-gray-300">
                   Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link href="/app/diary/entries" className="hover:text-gray-300">
+                  Entries
+                </Link>
+              </li>
+              <li>
+                <Link href="/app/diary/questions" className="hover:text-gray-300">
+                  Questions
                 </Link>
               </li>
               <li>
@@ -45,9 +57,10 @@ function InnerHeader() {
               </li>
               <li>
                 <Link
-                  href={`/app/logs/new?callbackUrl=${encodeURIComponent(currentUrl)}`}
-                  className="hover:text-gray-300"
-                >
+                  href={`/app/logs/new?callbackUrl=${encodeURIComponent(
+                    currentUrl
+                  )}`}
+                  className="hover:text-gray-300">
                   Log Time
                 </Link>
               </li>

@@ -60,14 +60,14 @@ export function TimeLoggedChart({
     const data = generateBaseChartData();
 
     logsWithTags.forEach((log) => {
-      if (!log.start_time) {
+      if (!log.startTime) {
         return;
       }
-      const date = new Date(log.start_time);
+      const date = new Date(log.startTime);
       const dateString = formatOutputDate(date);
       const existingData = data.find((item) => item.date === dateString);
       if (existingData) {
-        existingData.hours += log.duration_minutes / 60;
+        existingData.hours += log.durationMinutes / 60;
       }
     });
 

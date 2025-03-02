@@ -1,5 +1,5 @@
-import { UserTimeLog, UserTags } from "../../drizzle/schema";
+import { UserTimeLogSelect, UserTagSelect } from "./database-types";
 
-export type FocusLogWithTags = UserTimeLog & {
-  tags: UserTags[];
+export type FocusLogWithTags = UserTimeLogSelect & {
+  tags: UserTagSelect[];
 };

@@ -2,13 +2,12 @@
 import React from "react";
 import { Input } from "../ui/input";
 import SelectTagsClient from "./SelectTagsClient";
-import { User, UserTags } from "../../../drizzle/schema";
 import { Button } from "../ui/button";
 import { RetroactiveFocusLog } from "@/types/RetroactiveFocusLog";
-import { toMySQLDatetime } from "../../db/db-utils";
 import { Textarea } from "../ui/textarea";
 import { useRouter } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UserSelect, UserTagSelect } from "@/types/database-types";
 
 const formatDateTimeLocalToString = (date: Date): string => {
   const year = date.getFullYear();
@@ -48,8 +47,8 @@ export default function RetroactiveLoggerClient({
   loggedFocusCallback,
   user,
 }: {
-  user: User;
-  userTags: UserTags[];
+  user: UserSelect;
+  userTags: UserTagSelect[];
   loggedFocusCallback: (focusLog: RetroactiveFocusLog) => Promise<string>;
 }) {
   const [startDateTimeString, setStartDateTimeString] = React.useState(
@@ -84,10 +83,10 @@ export default function RetroactiveLoggerClient({
     );
 
     const focusLog: RetroactiveFocusLog = {
-      start_time: startDateTimeString,
-      end_time: finishDateTimeString,
-      user_id: user.id,
-      duration_minutes: duration,
+      startTime: startDateTimeString,
+      endTime: finishDateTimeString,
+      userId: user.id,
+      durationMinutes: duration,
       description: description,
       tagIds: selectedTagsIds,
     };

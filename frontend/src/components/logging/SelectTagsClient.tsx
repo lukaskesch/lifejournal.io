@@ -1,12 +1,12 @@
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { UserTags } from "../../../drizzle/schema";
+import { UserTagSelect } from "@/types/database-types";
 
 export default function SelectTagsClient({
   userTags,
   selectedTagsIds,
   setSelectedTagsIds,
 }: {
-  userTags: UserTags[];
+  userTags: UserTagSelect[];
   selectedTagsIds: string[];
   setSelectedTagsIds: (tags: string[]) => void;
 }) {
@@ -17,8 +17,9 @@ export default function SelectTagsClient({
       {userTags.map((tag) => (
         <label
           key={tag.id}
-          className={`${selectedTagsIds.some((id) => id === tag.id) && "bg-slate-200"} m-1 p-2 rounded-lg cursor-pointer`}
-        >
+          className={`${
+            selectedTagsIds.some((id) => id === tag.id) && "bg-slate-200"
+          } m-1 p-2 rounded-lg cursor-pointer`}>
           <input
             type="checkbox"
             className="sr-only"
@@ -29,8 +30,8 @@ export default function SelectTagsClient({
               } else {
                 setSelectedTagsIds(
                   selectedTagsIds.filter(
-                    (selectedTagId) => selectedTagId !== tag.id,
-                  ),
+                    (selectedTagId) => selectedTagId !== tag.id
+                  )
                 );
               }
             }}

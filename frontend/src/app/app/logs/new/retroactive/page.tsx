@@ -2,11 +2,11 @@
 
 import db from "@/db";
 import {
-  user_tags,
-  user_time_log,
-  user_time_log_has_tag,
+  userTags,
+  userTimeLog,
+  userTimeLogHasTag,
   users,
-} from "../../../../../../drizzle/schema";
+} from "../../../../../types/schema";
 import { eq } from "drizzle-orm/expressions";
 import { v4 as uuidv4 } from "uuid";
 import RetroactiveLoggerClient from "@/components/logging/RetroactiveLoggerClient";
@@ -39,16 +39,16 @@ export default async function LiveFocusLogPage() {
 
       console.log(focusLog);
 
-      await db.insert(user_time_log).values({
+      await db.insert(userTimeLog).values({
         id: userTimeLogId,
         ...focusLog,
       });
 
-      await db.insert(user_time_log_has_tag).values(
+      await db.insert(userTimeLogHasTag).values(
         focusLog.tagIds.map((tagId) => ({
           id: uuidv4(),
-          user_time_log_id: userTimeLogId,
-          tag_id: tagId,
+          userTimeLogId,
+          tagId,
         }))
       );
 
@@ -60,12 +60,12 @@ export default async function LiveFocusLogPage() {
   }
 
   async function getUserTags() {
-    const userTags = await db
+    const tags = await db
       .select()
-      .from(user_tags)
-      .where(eq(user_tags.user_id, user.id))
+      .from(userTags)
+      .where(eq(userTags.userId, user.id))
       .execute();
-    return userTags;
+    return tags;
   }
 
   return (

@@ -1,8 +1,8 @@
 export type RetroactiveFocusLog = {
-  user_id: string;
-  start_time: string;
-  end_time: string;
-  duration_minutes: number;
+  userId: string;
+  startTime: string;
+  endTime: string;
+  durationMinutes: number;
   description: string;
   tagIds: string[];
 };

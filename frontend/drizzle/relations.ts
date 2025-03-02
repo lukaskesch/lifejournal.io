@@ -1,34 +1,120 @@
 import { relations } from "drizzle-orm/relations";
-import { users, user_tags, user_time_log, user_time_log_has_tag } from "./schema";
+import {
+  userPrompt,
+  promptAnswer,
+  users,
+  userTags,
+  userTimeLog,
+  userTimeLogHasTag,
+} from "../src/types/schema";
 
-export const user_tagsRelations = relations(user_tags, ({one, many}) => ({
-	user: one(users, {
-		fields: [user_tags.user_id],
-		references: [users.id]
-	}),
-	user_time_log_has_tags: many(user_time_log_has_tag),
+export const promptAnswerRelations = relations(promptAnswer, ({ one }) => ({
+  userPrompt: one(userPrompt, {
+    fields: [promptAnswer.promptId],
+    references: [userPrompt.id],
+  }),
 }));
 
-export const usersRelations = relations(users, ({many}) => ({
-	user_tags: many(user_tags),
-	user_time_logs: many(user_time_log),
+export const userPromptRelations = relations(userPrompt, ({ one, many }) => ({
+  promptAnswers: many(promptAnswer),
+  user: one(users, {
+    fields: [userPrompt.userId],
+    references: [users.id],
+  }),
 }));
 
-export const user_time_logRelations = relations(user_time_log, ({one, many}) => ({
-	user: one(users, {
-		fields: [user_time_log.user_id],
-		references: [users.id]
-	}),
-	user_time_log_has_tags: many(user_time_log_has_tag),
+export const usersRelations = relations(users, ({ many }) => ({
+  userPrompts: many(userPrompt),
+  userTags_userId: many(userTags, {
+    relationName: "userTags_userId_users_id",
+  }),
+  userTags_userId: many(userTags, {
+    relationName: "userTags_userId_users_id",
+  }),
+  userTimeLogs_userId: many(userTimeLog, {
+    relationName: "userTimeLog_userId_users_id",
+  }),
+  userTimeLogs_userId: many(userTimeLog, {
+    relationName: "userTimeLog_userId_users_id",
+  }),
 }));
 
-export const user_time_log_has_tagRelations = relations(user_time_log_has_tag, ({one}) => ({
-	user_tag: one(user_tags, {
-		fields: [user_time_log_has_tag.tag_id],
-		references: [user_tags.id]
-	}),
-	user_time_log: one(user_time_log, {
-		fields: [user_time_log_has_tag.user_time_log_id],
-		references: [user_time_log.id]
-	}),
+export const userTagsRelations = relations(userTags, ({ one, many }) => ({
+  user_userId: one(users, {
+    fields: [userTags.userId],
+    references: [users.id],
+    relationName: "userTags_userId_users_id",
+  }),
+  user_userId: one(users, {
+    fields: [userTags.userId],
+    references: [users.id],
+    relationName: "userTags_userId_users_id",
+  }),
+  userTimeLogHasTags_tagId: many(userTimeLogHasTag, {
+    relationName: "userTimeLogHasTag_tagId_userTags_id",
+  }),
+  userTimeLogHasTags_tagId: many(userTimeLogHasTag, {
+    relationName: "userTimeLogHasTag_tagId_userTags_id",
+  }),
+  userTimeLogHasTags_tagId: many(userTimeLogHasTag, {
+    relationName: "userTimeLogHasTag_tagId_userTags_id",
+  }),
 }));
+
+export const userTimeLogRelations = relations(userTimeLog, ({ one, many }) => ({
+  user_userId: one(users, {
+    fields: [userTimeLog.userId],
+    references: [users.id],
+    relationName: "userTimeLog_userId_users_id",
+  }),
+  user_userId: one(users, {
+    fields: [userTimeLog.userId],
+    references: [users.id],
+    relationName: "userTimeLog_userId_users_id",
+  }),
+  userTimeLogHasTags_userTimeLogId: many(userTimeLogHasTag, {
+    relationName: "userTimeLogHasTag_userTimeLogId_userTimeLog_id",
+  }),
+  userTimeLogHasTags_userTimeLogId: many(userTimeLogHasTag, {
+    relationName: "userTimeLogHasTag_userTimeLogId_userTimeLog_id",
+  }),
+  userTimeLogHasTags_userTimeLogId: many(userTimeLogHasTag, {
+    relationName: "userTimeLogHasTag_userTimeLogId_userTimeLog_id",
+  }),
+}));
+
+export const userTimeLogHasTagRelations = relations(
+  userTimeLogHasTag,
+  ({ one }) => ({
+    userTag_tagId: one(userTags, {
+      fields: [userTimeLogHasTag.tagId],
+      references: [userTags.id],
+      relationName: "userTimeLogHasTag_tagId_userTags_id",
+    }),
+    userTimeLog_userTimeLogId: one(userTimeLog, {
+      fields: [userTimeLogHasTag.userTimeLogId],
+      references: [userTimeLog.id],
+      relationName: "userTimeLogHasTag_userTimeLogId_userTimeLog_id",
+    }),
+    userTag_tagId: one(userTags, {
+      fields: [userTimeLogHasTag.tagId],
+      references: [userTags.id],
+      relationName: "userTimeLogHasTag_tagId_userTags_id",
+    }),
+    userTag_tagId: one(userTags, {
+      fields: [userTimeLogHasTag.tagId],
+      references: [userTags.id],
+      relationName: "userTimeLogHasTag_tagId_userTags_id",
+    }),
+    userTimeLog_userTimeLogId: one(userTimeLog, {
+      fields: [userTimeLogHasTag.userTimeLogId],
+      references: [userTimeLog.id],
+      relationName: "userTimeLogHasTag_userTimeLogId_userTimeLog_id",
+    }),
+    userTimeLog_userTimeLogId: one(userTimeLog, {
+      fields: [userTimeLogHasTag.userTimeLogId],
+      references: [userTimeLog.id],
+      relationName: "userTimeLogHasTag_userTimeLogId_userTimeLog_id",
+    }),
+  })
+);

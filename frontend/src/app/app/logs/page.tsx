@@ -2,15 +2,14 @@
 
 import db from "@/db";
 import {
-  user_tags,
-  user_time_log,
-  user_time_log_has_tag,
+  userTags,
+  userTimeLog,
+  userTimeLogHasTag,
   users,
-} from "../../../../drizzle/schema";
+} from "../../../types/schema";
 import { eq } from "drizzle-orm/expressions";
 import { FocusLogWithTags } from "@/types/FocusLogWithTags";
 import LogListClient from "@/components/logs/LogListClient";
-import { headers } from "next/headers";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 
@@ -34,16 +33,16 @@ export default async function Logs() {
   async function getUserLogsWithTags() {
     const result = await db
       .select({
-        log: user_time_log,
-        tag: user_tags,
+        log: userTimeLog,
+        tag: userTags,
       })
-      .from(user_time_log_has_tag)
-      .where(eq(user_time_log.user_id, user.id))
+      .from(userTimeLogHasTag)
+      .where(eq(userTimeLog.userId, user.id))
       .innerJoin(
-        user_time_log,
-        eq(user_time_log.id, user_time_log_has_tag.user_time_log_id)
+        userTimeLog,
+        eq(userTimeLog.id, userTimeLogHasTag.userTimeLogId)
       )
-      .innerJoin(user_tags, eq(user_tags.id, user_time_log_has_tag.tag_id))
+      .innerJoin(userTags, eq(userTags.id, userTimeLogHasTag.tagId))
       .execute();
 
     const logs = result.reduce((acc, { log, tag }) => {

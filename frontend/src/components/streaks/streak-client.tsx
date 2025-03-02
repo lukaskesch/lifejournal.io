@@ -1,7 +1,7 @@
 "use client";
 
+import { UserTagSelect, UserTimeLogSelect } from "@/types/database-types";
 import React from "react";
-import { UserTags, UserTimeLog } from "../../../drizzle/schema";
 
 export default function StreakClient({
   tag,
@@ -10,11 +10,11 @@ export default function StreakClient({
   streak,
   percentiles,
 }: {
-  tag: UserTags;
+  tag: UserTagSelect;
   days: {
     date: Date;
     logs: {
-      log: UserTimeLog;
+      log: UserTimeLogSelect;
     }[];
   }[];
   totalHours: number;
@@ -45,7 +45,7 @@ export default function StreakClient({
             onMouseEnter={() => setHoverDay(`${weekDayNumber}-${index}`)}
             onMouseLeave={() => setHoverDay(undefined)}
             className={`w-4 h-4 rounded-sm m-[1.5px] relative ${getIntensityClass(
-              day.logs.reduce((acc, log) => acc + log.log.duration_minutes, 0)
+              day.logs.reduce((acc, log) => acc + log.log.durationMinutes, 0)
             )}`}>
             {hoverDay === `${weekDayNumber}-${index}` && (
               <div className="absolute top-[16px] z-50 left-0">

@@ -6,6 +6,18 @@ import Footer from "@/components/layout/Footer";
 import { SessionProvider } from "@/components/SessionProvider";
 import GoogleAnalyticsWrapper from "@/components/GoogleAnalyticsWrapper";
 
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuIndicator,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuViewport,
+} from "@/components/ui/navigation-menu";
+
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {

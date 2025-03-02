@@ -1,13 +1,13 @@
 "use client";
 
-import { FocusLog } from "@/types/FocusLog";
 import { Button } from "../ui/button";
 import * as React from "react";
 import { toMySQLDatetime } from "../../db/db-utils";
-import { User, UserTags } from "../../../drizzle/schema";
 import SelectTagsClient from "./SelectTagsClient";
 import { Textarea } from "../ui/textarea";
 import { useRouter } from "next/navigation";
+import { UserTagSelect, UserSelect, UserTimeLogSelect } from "@/types/database-types";
+import { v4 as uuidv4 } from "uuid";
 
 export default function LiveTimeLoggerClient({
   user,
@@ -15,9 +15,9 @@ export default function LiveTimeLoggerClient({
   loggedTimeCallback,
   addTagsToFocusLogCallback,
 }: {
-  user: User;
-  userTags: UserTags[];
-  loggedTimeCallback: (FocusLog: FocusLog) => Promise<string>;
+  user: UserSelect;
+  userTags: UserTagSelect[];
+  loggedTimeCallback: (focusLog: UserTimeLogSelect) => Promise<string>;
   addTagsToFocusLogCallback: (
     focusLogId: string,
     tagIds: string[]
@@ -60,10 +60,11 @@ export default function LiveTimeLoggerClient({
     setEndTime(new Date());
     const endTime = new Date();
     loggedTimeCallback({
-      user_id: user.id,
-      start_time: toMySQLDatetime(startTime || new Date()),
-      end_time: toMySQLDatetime(endTime || new Date()),
-      duration_minutes: Math.floor(
+      id: uuidv4(),
+      userId: user.id,
+      startTime: toMySQLDatetime(startTime || new Date()),
+      endTime: toMySQLDatetime(endTime || new Date()),
+      durationMinutes: Math.floor(
         (endTime.getTime() - startTime.getTime()) / 1000 / 60
       ),
       description: description,
@@ -158,7 +159,7 @@ function DigitalStopwatch({ startTime }: { startTime: Date }) {
   const hours = Math.floor(minutes / 60);
 
   const outputSeconds = seconds < 10 ? `0${seconds}` : seconds;
-  const outputMinutes = (minutes % 60) < 10 ? `0${minutes % 60}` : minutes % 60;
+  const outputMinutes = minutes % 60 < 10 ? `0${minutes % 60}` : minutes % 60;
   const outputHours = hours < 10 ? `0${hours}` : hours;
 
   const interval = React.useRef<NodeJS.Timeout>();

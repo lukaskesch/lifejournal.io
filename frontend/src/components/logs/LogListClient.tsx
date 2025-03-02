@@ -12,23 +12,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { UserTags } from "../../../drizzle/schema";
 import { DatePickerWithRange } from "../ui/date-range-picker";
+import { UserTagSelect } from "@/types/database-types";
 
 export default function LogListClient({
   logsWithTags,
 }: {
   logsWithTags: FocusLogWithTags[];
 }) {
-  const [tags, setTags] = React.useState<UserTags[]>([]);
+  const [tags, setTags] = React.useState<UserTagSelect[]>([]);
   const [selectedTagIds, setSelectedTagIds] = React.useState<string[]>([]);
   const [filteredLogs, setFilteredLogs] =
     React.useState<FocusLogWithTags[]>(logsWithTags);
   const [startDateTime, setStartDateTime] = React.useState<Date | undefined>(
-    new Date(new Date().setDate(-30)),
+    new Date(new Date().setDate(-30))
   );
   const [finishDateTime, setFinishDateTime] = React.useState<Date | undefined>(
-    new Date(),
+    new Date()
   );
 
   React.useEffect(() => {
@@ -45,18 +45,18 @@ export default function LogListClient({
     // Filter by tags
     if (selectedTagIds.length !== 0) {
       logs = logs.filter((log) =>
-        log.tags.some((tag) => selectedTagIds.includes(tag.id)),
+        log.tags.some((tag) => selectedTagIds.includes(tag.id))
       );
     }
 
     // Filter by date
     const _startDateTime = new Date(
-      startDateTime ?? new Date(new Date().setDate(-30)),
+      startDateTime ?? new Date(new Date().setDate(-30))
     );
     const _finishDateTime = new Date(finishDateTime ?? new Date());
     logs = logs.filter((log) => {
-      if (!log.start_time) return false;
-      const logDateTime = new Date(log.start_time);
+      if (!log.startTime) return false;
+      const logDateTime = new Date(log.startTime);
       return logDateTime >= _startDateTime && logDateTime <= _finishDateTime;
     });
 
@@ -66,8 +66,8 @@ export default function LogListClient({
   const totalMinutes = React.useMemo(() => {
     return Math.floor(
       filteredLogs.reduce((acc, log) => {
-        return acc + log.duration_minutes;
-      }, 0),
+        return acc + log.durationMinutes;
+      }, 0)
     );
   }, [filteredLogs]);
 
@@ -82,13 +82,13 @@ export default function LogListClient({
   }, [filteredLogs]);
 
   logsWithTags.sort((a, b) => {
-    if (!a.start_time || !b.start_time) {
+    if (!a.startTime || !b.startTime) {
       return 0;
     }
-    if (a.start_time < b.start_time) {
+    if (a.startTime < b.startTime) {
       return 1;
     }
-    if (a.start_time > b.start_time) {
+    if (a.startTime > b.startTime) {
       return -1;
     }
     return 0;
@@ -137,7 +137,7 @@ function TagFilter({
   selectedTags,
   setSelectedTags,
 }: {
-  tags: UserTags[];
+  tags: UserTagSelect[];
   selectedTags: string[];
   setSelectedTags: React.Dispatch<React.SetStateAction<string[]>>;
 }) {
@@ -174,8 +174,7 @@ function TagFilter({
               value={tag.id}
               className={`flex items-center justify-between ${
                 selectedTags.includes(tag.id) ? "bg-primary/10 font-medium" : ""
-              }`}
-            >
+              }`}>
               {tag.name}
             </SelectItem>
           ))}
@@ -209,10 +208,10 @@ function Log({ log }: { log: FocusLogWithTags }) {
   return (
     <div className="p-2 m-2 rounded-lg bg-slate-100">
       <div className="font-bold">
-        {formatOutputDate(log.start_time)}
+        {formatOutputDate(log.startTime)}
         {/* {" – "} */}
         <span className="font-medium">{" | "}</span>
-        {formatDuration(log.duration_minutes)}
+        {formatDuration(log.durationMinutes)}
       </div>
       {/* <div>{log.id}</div> */}
       <div>{log.description}</div>

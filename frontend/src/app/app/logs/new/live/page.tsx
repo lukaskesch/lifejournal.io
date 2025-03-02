@@ -2,18 +2,18 @@
 
 import db from "@/db";
 import {
-  user_tags,
-  user_time_log,
-  user_time_log_has_tag,
+  userTags,
+  userTimeLog,
+  userTimeLogHasTag,
   users,
-} from "../../../../../../drizzle/schema";
+} from "../../../../../types/schema";
 import { eq } from "drizzle-orm/expressions";
 import { v4 as uuidv4 } from "uuid";
-import { FocusLog } from "@/types/FocusLog";
 import LiveTimeLoggerClient from "@/components/logging/LiveTimeLoggerClient";
 import { headers } from "next/headers";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
+import { UserTimeLogSelect } from "@/types/database-types";
 
 export default async function LiveFocusLogPage() {
   const session = await getServerSession(authOptions);
@@ -32,15 +32,13 @@ export default async function LiveFocusLogPage() {
     .execute()
     .then((result) => result[0]);
 
-  async function handleLoggedFocus(focusLog: FocusLog): Promise<string> {
+  async function handleLoggedFocus(focusLog: UserTimeLogSelect): Promise<string> {
     "use server";
     try {
-      const id = uuidv4();
-      await db.insert(user_time_log).values({
-        id: id,
+      await db.insert(userTimeLog).values({
         ...focusLog,
       });
-      return id;
+      return focusLog.id;
     } catch (error) {
       console.error("Error inserting user_time_log", error);
       throw new Error("Error while logging focus");
@@ -48,22 +46,22 @@ export default async function LiveFocusLogPage() {
   }
 
   async function getUserTags() {
-    const userTags = await db
+    const tags = await db
       .select()
-      .from(user_tags)
-      .where(eq(user_tags.user_id, user.id))
+      .from(userTags)
+      .where(eq(userTags.userId, user.id))
       .execute();
-    return userTags;
+    return tags;
   }
 
   async function addTagsToFocusLog(focusLogId: string, tagIds: string[]) {
     "use server";
     try {
-      await db.insert(user_time_log_has_tag).values(
+      await db.insert(userTimeLogHasTag).values(
         tagIds.map((tagId) => ({
           id: uuidv4(),
-          user_time_log_id: focusLogId,
-          tag_id: tagId,
+          userTimeLogId: focusLogId,
+          tagId: tagId,
         }))
       );
     } catch (error) {

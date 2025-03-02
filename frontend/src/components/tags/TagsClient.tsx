@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { User, UserTags } from "../../../drizzle/schema";
+import { userTags } from "@/types/schema";
 import {
   Dialog,
   DialogContent,
@@ -10,13 +10,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-
+import { UserTagSelect } from "@/types/database-types";
 export default function TagsClient({
   initialTags,
   createTag,
 }: {
-  initialTags: UserTags[];
-  createTag: (name: string) => Promise<UserTags>;
+  initialTags: UserTagSelect[];
+  createTag: (name: string) => Promise<UserTagSelect>;
 }) {
   const [tags, setTags] = React.useState(initialTags);
   const [newTagName, setNewTagName] = React.useState("");
@@ -58,8 +58,7 @@ export default function TagsClient({
             <div className="self-end mt-4">
               <Button
                 disabled={!newTagName}
-                onClick={handleCreateTagButtonClick}
-              >
+                onClick={handleCreateTagButtonClick}>
                 Add Tag
               </Button>
             </div>

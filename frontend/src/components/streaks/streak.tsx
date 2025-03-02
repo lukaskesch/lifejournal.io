@@ -1,10 +1,9 @@
 import db from "@/db";
 import {
-  user_tags,
-  user_time_log,
-  user_time_log_has_tag,
-  users,
-} from "../../../drizzle/schema";
+  userTags,
+  userTimeLog,
+  userTimeLogHasTag,
+} from "@/types/schema";
 import { eq } from "drizzle-orm/expressions";
 import {
   addDays,
@@ -29,23 +28,23 @@ export default async function Streak({
 
   const tags = await db
     .select({
-      tag: user_tags,
+      tag: userTags,
     })
-    .from(user_tags)
-    .where(eq(user_tags.id, tagId))
+    .from(userTags)
+    .where(eq(userTags.id, tagId))
     .execute();
 
   const allLogsWithGivenTag = await db
     .select({
-      log: user_time_log,
+      log: userTimeLog,
     })
-    .from(user_time_log_has_tag)
-    .where(eq(user_time_log_has_tag.tag_id, tagId))
+    .from(userTimeLogHasTag)
+    .where(eq(userTimeLogHasTag.tagId, tagId))
     .innerJoin(
-      user_time_log,
-      eq(user_time_log.id, user_time_log_has_tag.user_time_log_id)
+      userTimeLog,
+      eq(userTimeLog.id, userTimeLogHasTag.userTimeLogId)
     )
-    .orderBy(user_time_log.start_time)
+    .orderBy(userTimeLog.startTime)
     .execute();
 
   // Add two hours to the start and end dates to account for the timezone offset
@@ -83,8 +82,8 @@ export default async function Streak({
     days.push({
       date: endOfDay,
       logs: allLogsWithGivenTag.filter((log) => {
-        if (!log.log.start_time) return false;
-        const logDate = mySQLDateToDate(log.log.start_time);
+        if (!log.log.startTime) return false;
+        const logDate = mySQLDateToDate(log.log.startTime);
         return logDate >= beginningOfDay && logDate <= endOfDay;
       }),
     });
@@ -110,7 +109,7 @@ export default async function Streak({
   // Intensity calculation
   const minutesPerDay = days
     .map((day) =>
-      day.logs.reduce((acc, log) => acc + log.log.duration_minutes, 0)
+      day.logs.reduce((acc, log) => acc + log.log.durationMinutes, 0)
     )
     .filter((minutes) => minutes > 0)
     .sort((a, b) => a - b);
@@ -122,7 +121,6 @@ export default async function Streak({
   const totalHours = Math.floor(
     minutesPerDay.reduce((acc, minutes) => acc + minutes, 0) / 60
   );
-
 
   return (
     <StreakClient

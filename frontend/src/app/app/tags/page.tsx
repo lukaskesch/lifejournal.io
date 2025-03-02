@@ -1,13 +1,13 @@
 "use server";
 
 import db from "@/db";
-import { user_tags, users, UserTags } from "../../../../drizzle/schema";
+import { userTags, users } from "@/types/schema";
 import { eq } from "drizzle-orm/expressions";
 import { v4 as uuidv4 } from "uuid";
 import TagsClient from "@/components/tags/TagsClient";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
-import { headers } from "next/headers";
+import { UserTagSelect } from "@/types/database-types";
 
 export default async function Tags() {
   const session = await getServerSession(authOptions);
@@ -15,6 +15,10 @@ export default async function Tags() {
 
   if (!email) {
     return null;
+  }
+
+  if (!db) {
+    return <div>Database not found</div>;
   }
 
   const user = await db
@@ -26,28 +30,28 @@ export default async function Tags() {
     .then((result) => result[0]);
 
   async function getUserTags(userId: string) {
-    const userTags = await db
+    const userTagsResult = await db
       .select()
-      .from(user_tags)
-      .where(eq(user_tags.user_id, userId))
+      .from(userTags)
+      .where(eq(userTags.userId, userId))
       .execute();
-    return userTags;
+    return userTagsResult;
   }
 
-  async function addTagToUser(tagName: string): Promise<UserTags> {
+  async function addTagToUser(tagName: string): Promise<UserTagSelect> {
     "use server";
     try {
       const id = uuidv4();
-      await db.insert(user_tags).values({
+      await db.insert(userTags).values({
         id: id,
-        user_id: user.id,
+        userId: user.id,
         name: tagName,
       });
 
       const tags = await db
         .select()
-        .from(user_tags)
-        .where(eq(user_tags.id, id))
+        .from(userTags)
+        .where(eq(userTags.id, id))
         .execute();
       return tags[0];
     } catch (error) {
