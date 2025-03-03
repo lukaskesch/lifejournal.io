@@ -17,6 +17,8 @@ import { UserTagSelect } from "@/types/database-types";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSearchParams } from "next/navigation";
+import Toolbar from "@/components/layout/toolbar";
+import { Button } from "@/components/ui/button";
 
 export default function LogListClient({
   logsWithTags,
@@ -103,18 +105,29 @@ export default function LogListClient({
 
   return (
     <div className="flex flex-col min-h-screen m-2">
-      <div className="flex flex-row justify-between gap-2 m-2">
-        <Link href="/app/activities/tags" className="hover:text-gray-300">
-          Manage Tags
-        </Link>
+      <Toolbar>
+      <div className="flex flex-row justify-between gap-3">
+          <div className="">Activities: #{numberOfLogs}</div>
+        <div className="">
+          {Math.floor(totalMinutes / 60) > 0
+            ? Math.floor(totalMinutes / 60) + " hours"
+            : totalMinutes + " minutes"}
+        </div>
+        {/* <div className="">{uniqueTagsCount} tags</div> */}
+        </div>
+        <div className="flex flex-row gap-4 items-center">
+          <Link href="/app/activities/tags" className="hover:text-gray-300">
+            Manage Tags
+          </Link>
         <Link
           href={`/app/activities/new?callbackUrl=${encodeURIComponent(
             currentUrl
           )}`}
-          className="hover:text-gray-300">
-          Log Time
-        </Link>
-      </div>
+            className="cursor-pointer">
+            <Button>Log Time</Button>
+          </Link>
+        </div>
+      </Toolbar>
       <div className="flex flex-row justify-between gap-2 m-2">
         <TagFilter
           tags={tags}
@@ -134,15 +147,6 @@ export default function LogListClient({
           startDateTime={startDateTime ?? new Date(new Date().setDate(-30))}
           finishDateTime={finishDateTime ?? new Date()}
         />
-      </div>
-      <div className="flex flex-row justify-between m-2">
-        <div className="font-bold text-2xl">{numberOfLogs} logs</div>
-        <div className="font-bold text-2xl">
-          {Math.floor(totalMinutes / 60) > 0
-            ? Math.floor(totalMinutes / 60) + " hours"
-            : totalMinutes + " minutes"}
-        </div>
-        <div className="font-bold text-2xl">{uniqueTagsCount} tags</div>
       </div>
       {filteredLogs.map((log) => (
         <Log key={log.id} log={log} />
