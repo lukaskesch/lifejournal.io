@@ -16,6 +16,12 @@ export default function Header() {
 function InnerHeader() {
   const { data: session, status } = useSession();
 
+  const pathname = usePathname();
+
+  const getIsSectionActive = (section: string) => {
+    return pathname.startsWith(section);
+  };
+
   return (
     <header className="bg-primary text-white p-4">
       <nav className=" flex justify-between items-center">
@@ -33,17 +39,35 @@ function InnerHeader() {
               </li>
 
               <li>
-                <Link href="/app/activities" className="hover:text-gray-300">
+                <Link
+                  href="/app/activities"
+                  className={`hover:text-gray-300 ${
+                    getIsSectionActive("/app/activities")
+                      ? "underline underline-offset-2"
+                      : ""
+                  }`}>
                   Activities
                 </Link>
               </li>
               <li>
-                <Link href="/app/diary" className="hover:text-gray-300">
+                <Link
+                  href="/app/diary"
+                  className={`hover:text-gray-300 ${
+                    getIsSectionActive("/app/diary")
+                      ? "underline underline-offset-2"
+                      : ""
+                  }`}>
                   Diary
                 </Link>
               </li>
               <li>
-                <Link href="/app/habits" className="hover:text-gray-300">
+                <Link
+                  href="/app/habits"
+                  className={`hover:text-gray-300 ${
+                    getIsSectionActive("/app/habits")
+                      ? "underline underline-offset-2"
+                      : ""
+                  }`}>
                   Habits
                 </Link>
               </li>
