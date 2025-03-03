@@ -35,6 +35,9 @@ export default function TagsClient({
       <Toolbar>
         <div>Tags: #{tags.length}</div>
         <div className="flex flex-row items-center gap-4">
+          {/* <div>Rename</div>
+          <div>Delete</div> */}
+          <div>Select</div>
           <div>Sort</div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
