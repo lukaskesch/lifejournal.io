@@ -10,9 +10,9 @@ fi
 WORKING_DIR=$(pwd)
 
 # Create the service file content
-cat > focus-app.service << EOL
+cat > lifejournal.service << EOL
 [Unit]
-Description=Focus App Docker Compose Service
+Description=Life Journal Docker Compose Service
 Requires=docker.service
 After=docker.service
 
@@ -20,7 +20,7 @@ After=docker.service
 Type=oneshot
 RemainAfterExit=yes
 WorkingDirectory=${WORKING_DIR}
-ExecStart=/usr/bin/docker compose up -d
+ExecStart=/usr/bin/docker compose up
 ExecStop=/usr/bin/docker compose down
 
 [Install]
@@ -28,17 +28,17 @@ WantedBy=multi-user.target
 EOL
 
 # Move the service file to systemd directory
-mv focus-app.service /etc/systemd/system/
+mv lifejournal.service /etc/systemd/system/
 
 # Set proper permissions
-chmod 644 /etc/systemd/system/focus-app.service
+chmod 644 /etc/systemd/system/lifejournal.service
 
 # Reload systemd daemon
 systemctl daemon-reload
 
 # Enable and start the service
-systemctl enable focus-app.service
-systemctl start focus-app.service
+systemctl enable lifejournal.service
+systemctl start lifejournal.service
 
 echo "Service has been created and started successfully!"
-echo "You can check the status with: systemctl status focus-app.service"
+echo "You can check the status with: systemctl status lifejournal.service"
