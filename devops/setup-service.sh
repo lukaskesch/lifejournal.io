@@ -33,12 +33,25 @@ mv lifejournal.service /etc/systemd/system/
 # Set proper permissions
 chmod 644 /etc/systemd/system/lifejournal.service
 
+echo "Service file created and moved to systemd directory"
+
 # Reload systemd daemon
 systemctl daemon-reload
 
+echo "Reloaded systemd daemon"
+
 # Enable and start the service
 systemctl enable lifejournal.service
-systemctl start lifejournal.service
+
+echo "Enabled lifejournal.service"
+
+# Check if service is already running before starting
+if systemctl is-active --quiet lifejournal.service; then
+    echo "Service is already running"
+else
+    systemctl start lifejournal.service
+    echo "Started lifejournal.service"
+fi
 
 echo "Service has been created and started successfully!"
 echo "You can check the status with: systemctl status lifejournal.service"
