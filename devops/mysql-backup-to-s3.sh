@@ -26,7 +26,7 @@ full_path="${dump_dir}/${dump_filename}"
 
 
 # Run mysqldump and capture its exit status
-mysqldump -p"$db_password" "$db_name" > "$full_path"
+mysqldump -p"$db_password" --all-databases > "$full_path"
 dump_status=$?
 
 # Check if mysqldump was successful
