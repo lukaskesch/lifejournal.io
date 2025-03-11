@@ -16,7 +16,7 @@ export default function AnswerPrompts({
 
   return (
     <div className="flex flex-col gap-4 max-w-xl mx-auto px-2 min-h-screen mt-10">
-      <h1 className="text-2xl font-bold">{prompts[activePromptIndex].prompt}</h1>
+      <h1 className="text-2xl font-bold">{"["}{activePromptIndex + 1}/{prompts.length}{"] "}{prompts[activePromptIndex].prompt}</h1>
       <textarea className="w-full min-h-60 p-2 border border-gray-300 rounded-md" value={answer} onChange={(e) => setAnswer(e.target.value)} />
       <div className="flex flex-row gap-4 justify-end">
 
