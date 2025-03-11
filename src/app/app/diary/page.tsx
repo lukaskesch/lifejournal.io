@@ -2,15 +2,18 @@ import Toolbar from "@/components/layout/toolbar";
 import { Button } from "@/components/ui/button";
 import { authOptions } from "@/lib/authOptions";
 import db from "@/db";
-import { users } from "@/types/schema";
 import { desc, eq, inArray } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
-import { promptAnswer, userPrompt } from "@/db/schema";
+import { promptAnswer, userPrompt, users } from "@/db/schema";
 
 export default async function DiaryPage() {
   const session = await getServerSession(authOptions);
   const email = session?.user?.email;
+
+  if (!email) {
+    return null;
+  }
 
   const user = await db
     .select()
