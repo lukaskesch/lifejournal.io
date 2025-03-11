@@ -11,7 +11,7 @@ export default async function DiaryPage() {
   const session = await getServerSession(authOptions);
   const email = session?.user?.email;
 
-  if (!email) {
+  if (!email || !db) {
     return null;
   }
 
@@ -36,13 +36,19 @@ export default async function DiaryPage() {
   const promptAnswers = await db
     .select()
     .from(promptAnswer)
-    .where(inArray(promptAnswer.promptId, userPrompts.map((prompt) => prompt.id)))
+    .where(
+      inArray(
+        promptAnswer.promptId,
+        userPrompts.map((prompt) => prompt.id)
+      )
+    )
     .orderBy(desc(promptAnswer.createdAt))
     .execute();
-  
-  console.log(promptAnswers);
-  console.log(userPrompts);
-  
+
+  const promptAnswersWithPrompts = promptAnswers.map((answer) => ({
+    ...answer,
+    prompt: userPrompts.find((prompt) => prompt.id === answer.promptId),
+  }));
 
   return (
     <div>
@@ -56,6 +62,19 @@ export default async function DiaryPage() {
           </Link>
         </div>
       </Toolbar>
+      <div className="flex flex-col gap-8 max-w-xl mx-auto px-2 min-h-screen mt-10">
+        {promptAnswersWithPrompts.map((answer) => (
+          <div key={answer.id}>
+            <div className="flex flex-row gap-2 items-center justify-between">
+              <div className="font-bold">{answer.prompt?.prompt}</div>
+              <div className="text-sm text-gray-500">
+                {new Date(answer.createdAt).toLocaleDateString()}
+              </div>
+            </div>
+            <div>{answer.answer}</div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
