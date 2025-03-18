@@ -2,14 +2,21 @@
 
 import { useState } from 'react';
 import { addQuestion } from './actions';
+import { Button } from '@/components/ui/button';
 
 export default function AddQuestion() {
   const [prompt, setPrompt] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAddQuestion = async () => {
-    if (prompt.trim()) {
+    if (!prompt.trim() || isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
       await addQuestion(prompt);
       setPrompt('');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -27,12 +34,12 @@ export default function AddQuestion() {
           className="border rounded-md p-2"
           placeholder="Enter your question..."
         />
-        <button
+        <Button
           onClick={handleAddQuestion}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
+          disabled={!prompt.trim() || isSubmitting}
         >
           Add Question
-        </button>
+        </Button>
       </div>
     </div>
   );

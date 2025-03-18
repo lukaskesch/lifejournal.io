@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { UserPromptSelect } from '@/types/database-types';
+import { Button } from '@/components/ui/button';
 
 interface EditQuestionProps {
   question: UserPromptSelect;
@@ -42,24 +43,25 @@ export default function EditQuestion({ question, onDelete, onUpdate }: EditQuest
           className="flex-1 p-2 border rounded-md text-lg"
           disabled={isSubmitting}
         />
-        <button
+        <Button
           type="button"
+          variant="outline"
           onClick={() => {
             setEditedPrompt(question.prompt);
             setIsEditing(false);
           }}
-          className="px-3 py-1 text-gray-600 hover:text-gray-800 rounded whitespace-nowrap"
           disabled={isSubmitting}
+          size="sm"
         >
           Cancel
-        </button>
-        <button
+        </Button>
+        <Button
           type="submit"
-          className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 whitespace-nowrap"
           disabled={isSubmitting || editedPrompt.trim() === question.prompt}
+          size="sm"
         >
           Save
-        </button>
+        </Button>
       </form>
     );
   }
@@ -68,19 +70,22 @@ export default function EditQuestion({ question, onDelete, onUpdate }: EditQuest
     <div className="flex items-center gap-4 w-full">
       <p className="text-lg flex-1">{question.prompt}</p>
       <div className="flex gap-2 whitespace-nowrap">
-        <button
+        <Button
           onClick={() => setIsEditing(true)}
-          className="text-blue-600 hover:text-blue-800 p-1 rounded transition-colors"
+          variant="ghost"
+          size="sm"
         >
           Edit
-        </button>
+        </Button>
         <form action={onDelete}>
-          <button
+          <Button
             type="submit"
-            className="text-red-600 hover:text-red-800 p-1 rounded transition-colors"
+            variant="ghost"
+            size="sm"
+            className="text-red-600 hover:text-red-800 hover:bg-red-100"
           >
             Delete
-          </button>
+          </Button>
         </form>
       </div>
     </div>
