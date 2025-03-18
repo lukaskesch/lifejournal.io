@@ -3,9 +3,9 @@ import { eq } from "drizzle-orm/expressions";
 import { getServerSession } from "next-auth";
 import { userPrompt, users } from "@/types/schema";
 import db from "@/db";
+import AddQuestion from "./AddQuestion";
 
 export default async function DiaryQuestions() {
-
   if(!db) {
     return <div>Database not found</div>;
   }
@@ -29,15 +29,22 @@ export default async function DiaryQuestions() {
     .select()
     .from(userPrompt)
     .where(eq(userPrompt.userId, user.id))
-    .execute()
+    .execute();
 
   return (
-    <div className="flex flex-col gap-2">
-      {userQuestions.map((question) => (
-        <div key={question.id} className="flex flex-col gap-2">
-          <h2>{question.prompt}</h2>
-        </div>
-      ))}
+    <div className="max-w-4xl mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-6">Journal Questions</h1>
+      <AddQuestion />
+      <div className="grid gap-4">
+        {userQuestions.map((question) => (
+          <div 
+            key={question.id} 
+            className="p-4 bg-white rounded-lg shadow border border-gray-200"
+          >
+            <p className="text-lg">{question.prompt}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
