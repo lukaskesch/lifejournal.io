@@ -8,10 +8,6 @@ import { deletePrompt, updatePrompt } from "./actions";
 import EditPrompt from "./EditPrompt";
 
 export default async function DiaryPrompts() {
-  if(!db) {
-    return <div>Database not found</div>;
-  }
-
   const session = await getServerSession(authOptions);
   const email = session?.user?.email;
 
