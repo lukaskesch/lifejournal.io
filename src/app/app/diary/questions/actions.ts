@@ -1,21 +1,23 @@
-import { NextResponse } from "next/server";
+'use server';
+
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { eq } from "drizzle-orm/expressions";
 import { users, userPrompt } from "@/types/schema";
 import db from "@/db";
 import { v4 as uuidv4 } from 'uuid';
+import { revalidatePath } from "next/cache";
 
-export async function POST(request: Request) {
+export async function addQuestion(formData: FormData) {
   if (!db) {
-    return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
+    throw new Error("Database not initialized");
   }
 
   const session = await getServerSession(authOptions);
   const email = session?.user?.email;
 
   if (!email) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    throw new Error("Unauthorized");
   }
 
   const user = await db
@@ -27,13 +29,13 @@ export async function POST(request: Request) {
     .then((result) => result[0]);
 
   if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+    throw new Error("User not found");
   }
 
-  const { prompt } = await request.json();
+  const prompt = formData.get('prompt');
 
-  if (!prompt) {
-    return NextResponse.json({ error: "Prompt is required" }, { status: 400 });
+  if (!prompt || typeof prompt !== 'string') {
+    throw new Error("Prompt is required");
   }
 
   await db.insert(userPrompt).values({
@@ -42,5 +44,5 @@ export async function POST(request: Request) {
     prompt,
   });
 
-  return NextResponse.json({ success: true });
+  revalidatePath('/app/diary/questions');
 }

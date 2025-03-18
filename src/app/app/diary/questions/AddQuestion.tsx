@@ -1,35 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef } from 'react';
+import { addQuestion } from './actions';
 
 export default function AddQuestion() {
-  const [prompt, setPrompt] = useState('');
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    try {
-      const response = await fetch('/api/questions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ prompt }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to add question');
-      }
-
-      setPrompt('');
-      window.location.reload();
-    } catch (error) {
-      console.error('Error adding question:', error);
-    }
-  };
+  const formRef = useRef<HTMLFormElement>(null);
 
   return (
-    <form onSubmit={handleSubmit} className="mb-6">
+    <form
+      ref={formRef}
+      action={async (formData) => {
+        await addQuestion(formData);
+        formRef.current?.reset();
+      }}
+      className="mb-6"
+    >
       <div className="flex flex-col gap-2">
         <label htmlFor="prompt" className="text-sm font-medium">
           New Question
@@ -37,8 +22,7 @@ export default function AddQuestion() {
         <input
           type="text"
           id="prompt"
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
+          name="prompt"
           className="border rounded-md p-2"
           placeholder="Enter your question..."
           required
