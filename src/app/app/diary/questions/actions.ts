@@ -55,21 +55,18 @@ export async function addQuestion(prompt: string) {
   revalidatePath('/app/diary/questions');
 }
 
-export async function deleteQuestion(questionId: string) {
-  const user = await getUserFromSession();
-
+async function verifyQuestionOwnership(questionId: string, userId: string) {
   if (!db) {
     throw new Error("Database not initialized");
   }
 
-  // First verify the question belongs to the user
   const question = await db
     .select()
     .from(userPrompt)
     .where(
       and(
         eq(userPrompt.id, questionId),
-        eq(userPrompt.userId, user.id)
+        eq(userPrompt.userId, userId)
       )
     )
     .limit(1)
@@ -80,8 +77,47 @@ export async function deleteQuestion(questionId: string) {
     throw new Error("Question not found or unauthorized");
   }
 
+  return question;
+}
+
+export async function deleteQuestion(questionId: string) {
+  const user = await getUserFromSession();
+
+  if (!db) {
+    throw new Error("Database not initialized");
+  }
+
+  await verifyQuestionOwnership(questionId, user.id);
+
   await db
     .delete(userPrompt)
+    .where(
+      and(
+        eq(userPrompt.id, questionId),
+        eq(userPrompt.userId, user.id)
+      )
+    )
+    .execute();
+
+  revalidatePath('/app/diary/questions');
+}
+
+export async function updateQuestion(questionId: string, prompt: string) {
+  if (!prompt.trim()) {
+    throw new Error("Prompt is required");
+  }
+
+  const user = await getUserFromSession();
+
+  if (!db) {
+    throw new Error("Database not initialized");
+  }
+
+  await verifyQuestionOwnership(questionId, user.id);
+
+  await db
+    .update(userPrompt)
+    .set({ prompt: prompt.trim() })
     .where(
       and(
         eq(userPrompt.id, questionId),

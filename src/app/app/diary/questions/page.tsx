@@ -4,7 +4,8 @@ import { getServerSession } from "next-auth";
 import { userPrompt, users } from "@/types/schema";
 import db from "@/db";
 import AddQuestion from "./AddQuestion";
-import { deleteQuestion } from "./actions";
+import { deleteQuestion, updateQuestion } from "./actions";
+import EditQuestion from "./EditQuestion";
 
 export default async function DiaryQuestions() {
   if(!db) {
@@ -43,20 +44,17 @@ export default async function DiaryQuestions() {
             key={question.id} 
             className="p-4 bg-white rounded-lg shadow border border-gray-200"
           >
-            <div className="flex justify-between items-start gap-4">
-              <p className="text-lg">{question.prompt}</p>
-              <form action={async () => {
+            <EditQuestion 
+              question={question} 
+              onDelete={async () => {
                 'use server';
                 await deleteQuestion(question.id);
-              }}>
-                <button
-                  type="submit"
-                  className="text-red-600 hover:text-red-800 p-1 rounded transition-colors"
-                >
-                  Delete
-                </button>
-              </form>
-            </div>
+              }}
+              onUpdate={async (prompt: string) => {
+                'use server';
+                await updateQuestion(question.id, prompt);
+              }}
+            />
           </div>
         ))}
       </div>
