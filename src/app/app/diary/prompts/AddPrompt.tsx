@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { addPrompt } from './actions';
 import { Button } from '@/components/ui/button';
 
-export default function AddQuestion() {
+export default function AddPrompt() {
   const [prompt, setPrompt] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -26,20 +26,27 @@ export default function AddQuestion() {
         <label htmlFor="prompt" className="text-sm font-medium">
           New Prompt
         </label>
-        <input
-          type="text"
-          id="prompt"
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          className="border rounded-md p-2"
-          placeholder="Enter your question..."
-        />
-        <Button
-          onClick={handleAddPrompt}
-          disabled={!prompt.trim() || isSubmitting}
-        >
-          Add Prompt
-        </Button>
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          handleAddPrompt();
+        }} className="flex gap-2">
+          <input
+            type="text"
+            id="prompt"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            className="border rounded-md p-2 flex-1"
+            placeholder="Enter your prompt..."
+            disabled={isSubmitting}
+          />
+          <Button
+            type="submit"
+            disabled={!prompt.trim() || isSubmitting}
+          >
+            Add Prompt
+          </Button>
+        </form>
+
       </div>
     </div>
   );
