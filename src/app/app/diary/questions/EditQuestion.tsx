@@ -34,42 +34,40 @@ export default function EditQuestion({ question, onDelete, onUpdate }: EditQuest
 
   if (isEditing) {
     return (
-      <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-        <textarea
+      <form onSubmit={handleSubmit} className="flex items-center gap-2 w-full">
+        <input
+          type="text"
           value={editedPrompt}
           onChange={(e) => setEditedPrompt(e.target.value)}
-          className="w-full p-2 border rounded-md"
-          rows={3}
+          className="flex-1 p-2 border rounded-md text-lg"
           disabled={isSubmitting}
         />
-        <div className="flex justify-end gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              setEditedPrompt(question.prompt);
-              setIsEditing(false);
-            }}
-            className="px-3 py-1 text-gray-600 hover:text-gray-800 rounded"
-            disabled={isSubmitting}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
-            disabled={isSubmitting || editedPrompt.trim() === question.prompt}
-          >
-            Save
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => {
+            setEditedPrompt(question.prompt);
+            setIsEditing(false);
+          }}
+          className="px-3 py-1 text-gray-600 hover:text-gray-800 rounded whitespace-nowrap"
+          disabled={isSubmitting}
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 whitespace-nowrap"
+          disabled={isSubmitting || editedPrompt.trim() === question.prompt}
+        >
+          Save
+        </button>
       </form>
     );
   }
 
   return (
-    <div className="flex justify-between items-start gap-4">
-      <p className="text-lg">{question.prompt}</p>
-      <div className="flex gap-2">
+    <div className="flex items-center gap-4 w-full">
+      <p className="text-lg flex-1">{question.prompt}</p>
+      <div className="flex gap-2 whitespace-nowrap">
         <button
           onClick={() => setIsEditing(true)}
           className="text-blue-600 hover:text-blue-800 p-1 rounded transition-colors"
