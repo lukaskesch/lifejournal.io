@@ -2,17 +2,13 @@
 
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
-import { eq } from "drizzle-orm/expressions";
+import { eq, and } from "drizzle-orm";
 import { users, userPrompt } from "@/types/schema";
 import db from "@/db";
 import { v4 as uuidv4 } from 'uuid';
 import { revalidatePath } from "next/cache";
 
-export async function addQuestion(prompt: string) {
-  if (!prompt.trim()) {
-    throw new Error("Prompt is required");
-  }
-
+async function getUserFromSession() {
   if (!db) {
     throw new Error("Database not initialized");
   }
@@ -36,11 +32,63 @@ export async function addQuestion(prompt: string) {
     throw new Error("User not found");
   }
 
+  return user;
+}
+
+export async function addQuestion(prompt: string) {
+  if (!prompt.trim()) {
+    throw new Error("Prompt is required");
+  }
+
+  const user = await getUserFromSession();
+
+  if (!db) {
+    throw new Error("Database not initialized");
+  }
+
   await db.insert(userPrompt).values({
     id: uuidv4(),
     userId: user.id,
     prompt: prompt.trim(),
   });
+
+  revalidatePath('/app/diary/questions');
+}
+
+export async function deleteQuestion(questionId: string) {
+  const user = await getUserFromSession();
+
+  if (!db) {
+    throw new Error("Database not initialized");
+  }
+
+  // First verify the question belongs to the user
+  const question = await db
+    .select()
+    .from(userPrompt)
+    .where(
+      and(
+        eq(userPrompt.id, questionId),
+        eq(userPrompt.userId, user.id)
+      )
+    )
+    .limit(1)
+    .execute()
+    .then((result) => result[0]);
+
+  if (!question) {
+    throw new Error("Question not found or unauthorized");
+  }
+
+  await db
+    .delete(userPrompt)
+    .where(
+      and(
+        eq(userPrompt.id, questionId),
+        eq(userPrompt.userId, user.id)
+      )
+    )
+    .execute();
 
   revalidatePath('/app/diary/questions');
 }
