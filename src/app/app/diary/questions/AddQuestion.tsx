@@ -1,20 +1,20 @@
 'use client';
 
-import { useRef } from 'react';
+import { useState } from 'react';
 import { addQuestion } from './actions';
 
 export default function AddQuestion() {
-  const formRef = useRef<HTMLFormElement>(null);
+  const [prompt, setPrompt] = useState('');
+
+  const handleAddQuestion = async () => {
+    if (prompt.trim()) {
+      await addQuestion(prompt);
+      setPrompt('');
+    }
+  };
 
   return (
-    <form
-      ref={formRef}
-      action={async (formData) => {
-        await addQuestion(formData);
-        formRef.current?.reset();
-      }}
-      className="mb-6"
-    >
+    <div className="mb-6">
       <div className="flex flex-col gap-2">
         <label htmlFor="prompt" className="text-sm font-medium">
           New Question
@@ -22,18 +22,18 @@ export default function AddQuestion() {
         <input
           type="text"
           id="prompt"
-          name="prompt"
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
           className="border rounded-md p-2"
           placeholder="Enter your question..."
-          required
         />
         <button
-          type="submit"
+          onClick={handleAddQuestion}
           className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
         >
           Add Question
         </button>
       </div>
-    </form>
+    </div>
   );
 }

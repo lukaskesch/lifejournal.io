@@ -8,7 +8,11 @@ import db from "@/db";
 import { v4 as uuidv4 } from 'uuid';
 import { revalidatePath } from "next/cache";
 
-export async function addQuestion(formData: FormData) {
+export async function addQuestion(prompt: string) {
+  if (!prompt.trim()) {
+    throw new Error("Prompt is required");
+  }
+
   if (!db) {
     throw new Error("Database not initialized");
   }
@@ -32,16 +36,10 @@ export async function addQuestion(formData: FormData) {
     throw new Error("User not found");
   }
 
-  const prompt = formData.get('prompt');
-
-  if (!prompt || typeof prompt !== 'string') {
-    throw new Error("Prompt is required");
-  }
-
   await db.insert(userPrompt).values({
     id: uuidv4(),
     userId: user.id,
-    prompt,
+    prompt: prompt.trim(),
   });
 
   revalidatePath('/app/diary/questions');
