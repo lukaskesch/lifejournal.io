@@ -3,11 +3,11 @@ import { eq, desc } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { userPrompt, users } from "@/types/schema";
 import db from "@/db";
-import AddQuestion from "./AddQuestion";
-import { deleteQuestion, updateQuestion } from "./actions";
-import EditQuestion from "./EditQuestion";
+import AddPrompt from "./AddPrompt";
+import { deletePrompt, updatePrompt } from "./actions";
+import EditPrompt from "./EditPrompt";
 
-export default async function DiaryQuestions() {
+export default async function DiaryPrompts() {
   if(!db) {
     return <div>Database not found</div>;
   }
@@ -27,7 +27,7 @@ export default async function DiaryQuestions() {
     .execute()
     .then((result) => result[0]);
   
-  const userQuestions = await db
+  const userPrompts  = await db
     .select()
     .from(userPrompt)
     .where(eq(userPrompt.userId, user.id))
@@ -36,23 +36,22 @@ export default async function DiaryQuestions() {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Journal Questions</h1>
-      <AddQuestion />
+      <h1 className="text-2xl font-bold mb-6">Journal Prompts</h1>
+      <AddPrompt />
       <div className="grid gap-4">
-        {userQuestions.map((question) => (
-          <div 
-            key={question.id} 
-            className="p-4 bg-white rounded-lg shadow border border-gray-200"
-          >
-            <EditQuestion 
-              question={question} 
+        {userPrompts.map((prompt) => (
+          <div
+            key={prompt.id}
+            className="p-4 bg-white rounded-lg shadow border border-gray-200">
+            <EditPrompt
+              prompt={prompt}
               onDelete={async () => {
-                'use server';
-                await deleteQuestion(question.id);
+                "use server";
+                await deletePrompt(prompt.id);
               }}
-              onUpdate={async (prompt: string) => {
-                'use server';
-                await updateQuestion(question.id, prompt);
+              onUpdate={async (newPrompt: string) => {
+                "use server";
+                await updatePrompt(prompt.id, newPrompt);
               }}
             />
           </div>

@@ -35,7 +35,7 @@ async function getUserFromSession() {
   return user;
 }
 
-export async function addQuestion(prompt: string) {
+export async function addPrompt(prompt: string) {
   if (!prompt.trim()) {
     throw new Error("Prompt is required");
   }
@@ -55,45 +55,40 @@ export async function addQuestion(prompt: string) {
   revalidatePath('/app/diary/questions');
 }
 
-async function verifyQuestionOwnership(questionId: string, userId: string) {
+async function verifyPromptOwnership(promptId: string, userId: string) {
   if (!db) {
     throw new Error("Database not initialized");
   }
 
-  const question = await db
+  const prompt = await db
     .select()
     .from(userPrompt)
-    .where(
-      and(
-        eq(userPrompt.id, questionId),
-        eq(userPrompt.userId, userId)
-      )
-    )
+    .where(and(eq(userPrompt.id, promptId), eq(userPrompt.userId, userId)))
     .limit(1)
     .execute()
     .then((result) => result[0]);
 
-  if (!question) {
-    throw new Error("Question not found or unauthorized");
+  if (!prompt) {
+    throw new Error("Prompt not found or unauthorized");
   }
 
-  return question;
+  return prompt;
 }
 
-export async function deleteQuestion(questionId: string) {
+export async function deletePrompt(promptId: string) {
   const user = await getUserFromSession();
 
   if (!db) {
     throw new Error("Database not initialized");
   }
 
-  await verifyQuestionOwnership(questionId, user.id);
+  await verifyPromptOwnership(promptId, user.id);
 
   await db
     .delete(userPrompt)
     .where(
       and(
-        eq(userPrompt.id, questionId),
+        eq(userPrompt.id, promptId),
         eq(userPrompt.userId, user.id)
       )
     )
@@ -102,7 +97,7 @@ export async function deleteQuestion(questionId: string) {
   revalidatePath('/app/diary/questions');
 }
 
-export async function updateQuestion(questionId: string, prompt: string) {
+export async function updatePrompt(promptId: string, prompt: string) {
   if (!prompt.trim()) {
     throw new Error("Prompt is required");
   }
@@ -113,17 +108,12 @@ export async function updateQuestion(questionId: string, prompt: string) {
     throw new Error("Database not initialized");
   }
 
-  await verifyQuestionOwnership(questionId, user.id);
+  await verifyPromptOwnership(promptId, user.id);
 
   await db
     .update(userPrompt)
     .set({ prompt: prompt.trim() })
-    .where(
-      and(
-        eq(userPrompt.id, questionId),
-        eq(userPrompt.userId, user.id)
-      )
-    )
+    .where(and(eq(userPrompt.id, promptId), eq(userPrompt.userId, user.id)))
     .execute();
 
   revalidatePath('/app/diary/questions');

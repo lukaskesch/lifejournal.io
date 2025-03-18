@@ -1,19 +1,19 @@
 'use client';
 
 import { useState } from 'react';
-import { addQuestion } from './actions';
+import { addPrompt } from './actions';
 import { Button } from '@/components/ui/button';
 
 export default function AddQuestion() {
   const [prompt, setPrompt] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleAddQuestion = async () => {
+  const handleAddPrompt = async () => {
     if (!prompt.trim() || isSubmitting) return;
 
     setIsSubmitting(true);
     try {
-      await addQuestion(prompt);
+      await addPrompt(prompt);
       setPrompt('');
     } finally {
       setIsSubmitting(false);
@@ -24,7 +24,7 @@ export default function AddQuestion() {
     <div className="mb-6">
       <div className="flex flex-col gap-2">
         <label htmlFor="prompt" className="text-sm font-medium">
-          New Question
+          New Prompt
         </label>
         <input
           type="text"
@@ -35,10 +35,10 @@ export default function AddQuestion() {
           placeholder="Enter your question..."
         />
         <Button
-          onClick={handleAddQuestion}
+          onClick={handleAddPrompt}
           disabled={!prompt.trim() || isSubmitting}
         >
-          Add Question
+          Add Prompt
         </Button>
       </div>
     </div>

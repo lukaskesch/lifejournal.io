@@ -55,7 +55,7 @@ export default async function DiaryPage() {
       <Toolbar>
         <div className="font-bold text-lg">Diary</div>
         <div className="flex flex-row items-center gap-4">
-          <Link href="/app/diary/questions">Manage Questions</Link>
+          <Link href="/app/diary/prompts">Manage Prompts</Link>
           {/* <Link href="/app/diary/entries">Entries</Link> */}
           <Link href="/app/diary/write">
             <Button>Write</Button>

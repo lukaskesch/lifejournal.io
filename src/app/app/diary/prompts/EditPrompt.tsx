@@ -4,30 +4,30 @@ import { useState } from 'react';
 import { UserPromptSelect } from '@/types/database-types';
 import { Button } from '@/components/ui/button';
 
-interface EditQuestionProps {
-  question: UserPromptSelect;
+interface EditPromptProps {
+  prompt: UserPromptSelect;
   onDelete: () => Promise<void>;
   onUpdate: (prompt: string) => Promise<void>;
 }
 
-export default function EditQuestion({ question, onDelete, onUpdate }: EditQuestionProps) {
+export default function EditPrompt({ prompt, onDelete, onUpdate }: EditPromptProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedPrompt, setEditedPrompt] = useState(question.prompt);
+  const [editedPrompt, setEditedPrompt] = useState(prompt.prompt);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editedPrompt.trim() === question.prompt) {
+    if (editedPrompt.trim() === prompt.prompt) {
       setIsEditing(false);
       return;
     }
-    
+
     setIsSubmitting(true);
     try {
       await onUpdate(editedPrompt);
       setIsEditing(false);
     } catch (error) {
-      console.error('Error updating question:', error);
+      console.error("Error updating prompt:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -47,19 +47,17 @@ export default function EditQuestion({ question, onDelete, onUpdate }: EditQuest
           type="button"
           variant="outline"
           onClick={() => {
-            setEditedPrompt(question.prompt);
+            setEditedPrompt(prompt.prompt);
             setIsEditing(false);
           }}
           disabled={isSubmitting}
-          size="sm"
-        >
+          size="sm">
           Cancel
         </Button>
         <Button
           type="submit"
-          disabled={isSubmitting || editedPrompt.trim() === question.prompt}
-          size="sm"
-        >
+          disabled={isSubmitting || editedPrompt.trim() === prompt.prompt}
+          size="sm">
           Save
         </Button>
       </form>
@@ -68,13 +66,9 @@ export default function EditQuestion({ question, onDelete, onUpdate }: EditQuest
 
   return (
     <div className="flex items-center gap-4 w-full">
-      <p className="text-lg flex-1">{question.prompt}</p>
+      <p className="text-lg flex-1">{prompt.prompt}</p>
       <div className="flex gap-2 whitespace-nowrap">
-        <Button
-          onClick={() => setIsEditing(true)}
-          variant="ghost"
-          size="sm"
-        >
+        <Button onClick={() => setIsEditing(true)} variant="ghost" size="sm">
           Edit
         </Button>
         <form action={onDelete}>
@@ -82,8 +76,7 @@ export default function EditQuestion({ question, onDelete, onUpdate }: EditQuest
             type="submit"
             variant="ghost"
             size="sm"
-            className="text-red-600 hover:text-red-800 hover:bg-red-100"
-          >
+            className="text-red-600 hover:text-red-800 hover:bg-red-100">
             Delete
           </Button>
         </form>
