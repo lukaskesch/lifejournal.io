@@ -1,5 +1,5 @@
 import { authOptions } from "@/lib/authOptions";
-import { eq } from "drizzle-orm/expressions";
+import { eq, desc } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { userPrompt, users } from "@/types/schema";
 import db from "@/db";
@@ -29,6 +29,7 @@ export default async function DiaryQuestions() {
     .select()
     .from(userPrompt)
     .where(eq(userPrompt.userId, user.id))
+    .orderBy(desc(userPrompt.createdAt))
     .execute();
 
   return (
