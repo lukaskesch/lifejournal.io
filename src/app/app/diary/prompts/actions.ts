@@ -3,7 +3,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { eq, and } from "drizzle-orm";
-import { users, userPrompt } from "@/types/schema";
+import { users, userPrompt, promptAnswer } from "@/types/schema";
 import db from "@/db";
 import { v4 as uuidv4 } from 'uuid';
 import { revalidatePath } from "next/cache";
@@ -52,7 +52,7 @@ export async function addPrompt(prompt: string) {
     prompt: prompt.trim(),
   });
 
-  revalidatePath('/app/diary/questions');
+  revalidatePath('/app/diary/prompts');
 }
 
 async function verifyPromptOwnership(promptId: string, userId: string) {
@@ -84,6 +84,13 @@ export async function deletePrompt(promptId: string) {
 
   await verifyPromptOwnership(promptId, user.id);
 
+  // First delete all answers for this prompt
+  await db
+    .delete(promptAnswer)
+    .where(eq(promptAnswer.promptId, promptId))
+    .execute();
+
+  // Then delete the prompt itself
   await db
     .delete(userPrompt)
     .where(
@@ -94,7 +101,7 @@ export async function deletePrompt(promptId: string) {
     )
     .execute();
 
-  revalidatePath('/app/diary/questions');
+  revalidatePath('/app/diary/prompts');
 }
 
 export async function updatePrompt(promptId: string, prompt: string) {
@@ -116,5 +123,5 @@ export async function updatePrompt(promptId: string, prompt: string) {
     .where(and(eq(userPrompt.id, promptId), eq(userPrompt.userId, user.id)))
     .execute();
 
-  revalidatePath('/app/diary/questions');
+  revalidatePath('/app/diary/prompts');
 }

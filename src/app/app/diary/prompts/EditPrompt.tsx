@@ -3,6 +3,17 @@
 import { useState } from 'react';
 import { UserPromptSelect } from '@/types/database-types';
 import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 interface EditPromptProps {
   prompt: UserPromptSelect;
@@ -71,15 +82,32 @@ export default function EditPrompt({ prompt, onDelete, onUpdate }: EditPromptPro
         <Button onClick={() => setIsEditing(true)} variant="ghost" size="sm">
           Edit
         </Button>
-        <form action={onDelete}>
-          <Button
-            type="submit"
-            variant="ghost"
-            size="sm"
-            className="text-red-600 hover:text-red-800 hover:bg-red-100">
-            Delete
-          </Button>
-        </form>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-red-600 hover:text-red-800 hover:bg-red-100">
+              Delete
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete prompt and all its answers?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will permanently delete this prompt and all answers associated with it. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <form action={onDelete}>
+                <AlertDialogAction type="submit" className="bg-red-600 hover:bg-red-700">
+                  Delete
+                </AlertDialogAction>
+              </form>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );
