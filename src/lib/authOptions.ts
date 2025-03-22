@@ -42,7 +42,7 @@ export const authOptions: NextAuthOptions = {
             image: user.image || null,
           });
         } else {
-          // Update existing user
+          // Update existing user:
           await db
             .update(users)
             .set({
