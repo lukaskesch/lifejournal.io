@@ -1,50 +1,18 @@
 import { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { eq } from "drizzle-orm";
+import GoogleProvider from "next-auth/providers/google";
 import { users } from "../types/schema";
 import db from "@/db";
-import bcrypt from "bcrypt";
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        username: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        if (!credentials?.username || !credentials?.password) {
-          return null;
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          scope: 'openid email profile'
         }
-
-        const userArray = await db
-          .select()
-          .from(users)
-          .where(eq(users.email, credentials.username))
-          .limit(1);
-
-        const user = userArray[0];
-
-        if (!user) {
-          return null;
-        }
-
-        const isPasswordValid = await bcrypt.compare(
-          credentials.password,
-          user.password
-        );
-
-        if (!isPasswordValid) {
-          return null;
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-        };
-      },
+      }
     }),
   ],
   session: {
