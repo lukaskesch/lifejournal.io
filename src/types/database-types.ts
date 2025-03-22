@@ -1,4 +1,4 @@
-import { promptAnswer, userPrompt, users, userTags, userTimeLog } from "./schema";
+import { promptAnswer, userPrompt, users, userTags, userTimeLog } from "../db/schema";
 
 export type UserSelect = typeof users.$inferSelect;
 export type UserTagSelect = typeof userTags.$inferSelect;

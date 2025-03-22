@@ -3,7 +3,7 @@ import {
   userTags,
   userTimeLog,
   userTimeLogHasTag,
-} from "@/types/schema";
+} from "@/db/schema";
 import { eq } from "drizzle-orm/expressions";
 import {
   addDays,

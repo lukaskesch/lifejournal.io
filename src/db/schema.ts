@@ -1,4 +1,4 @@
-import { mysqlTable, mysqlSchema, AnyMySqlColumn, foreignKey, primaryKey, char, text, datetime, varchar, int, unique, timestamp } from "drizzle-orm/mysql-core"
+import { mysqlTable, mysqlSchema, AnyMySqlColumn, foreignKey, primaryKey, char, text, datetime, varchar, int, unique } from "drizzle-orm/mysql-core"
 import { sql } from "drizzle-orm"
 
 export const promptAnswer = mysqlTable("prompt_answer", {
@@ -53,10 +53,9 @@ export const userTimeLogHasTag = mysqlTable("user_time_log_has_tag", {
 
 export const users = mysqlTable("users", {
 	id: char({ length: 36 }).notNull(),
+	googleUserId: varchar("google_user_id", { length: 255 }),
 	email: varchar({ length: 255 }).notNull(),
-	password: text().notNull(),
 	name: varchar({ length: 255 }),
-	emailVerified: timestamp({ fsp: 3, mode: 'string' }),
 	image: varchar({ length: 255 }),
 },
 (table) => [

@@ -1,7 +1,7 @@
 "use server";
 
 import db from "@/db";
-import { userTags, users } from "@/types/schema";
+import { userTags, users } from "@/db/schema";
 import { eq } from "drizzle-orm/expressions";
 import { v4 as uuidv4 } from "uuid";
 import TagsClient from "@/components/tags/TagsClient";

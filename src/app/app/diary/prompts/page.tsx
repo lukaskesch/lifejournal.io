@@ -1,7 +1,7 @@
 import { authOptions } from "@/lib/authOptions";
 import { eq, desc } from "drizzle-orm";
 import { getServerSession } from "next-auth";
-import { userPrompt, users } from "@/types/schema";
+import { userPrompt, users } from "@/db/schema";
 import db from "@/db";
 import AddPrompt from "./AddPrompt";
 import { deletePrompt, updatePrompt } from "./actions";

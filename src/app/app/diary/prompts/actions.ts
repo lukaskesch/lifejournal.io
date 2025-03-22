@@ -3,7 +3,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { eq, and } from "drizzle-orm";
-import { users, userPrompt, promptAnswer } from "@/types/schema";
+import { users, userPrompt, promptAnswer } from "@/db/schema";
 import db from "@/db";
 import { v4 as uuidv4 } from 'uuid';
 import { revalidatePath } from "next/cache";

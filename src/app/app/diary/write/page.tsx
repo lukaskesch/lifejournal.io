@@ -1,6 +1,6 @@
 import { authOptions } from "@/lib/authOptions";
 import db from "@/db";
-import { users } from "@/types/schema";
+import { users } from "@/db/schema";
 import { desc, eq, inArray } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { promptAnswer, userPrompt } from "@/db/schema";

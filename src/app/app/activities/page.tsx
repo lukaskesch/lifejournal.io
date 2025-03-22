@@ -6,7 +6,7 @@ import {
   userTimeLog,
   userTimeLogHasTag,
   users,
-} from "@/types/schema";
+} from "@/db/schema";
 import { eq } from "drizzle-orm/expressions";
 import { FocusLogWithTags } from "@/types/FocusLogWithTags";
 import LogListClient from "@/components/logs/LogListClient";
