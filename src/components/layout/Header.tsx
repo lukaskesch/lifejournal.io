@@ -1,7 +1,8 @@
 "use client";
 import React, { Suspense } from "react";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import Image from "next/image";
+import { useSession, signOut } from "next-auth/react";
 import { usePathname, useSearchParams } from "next/navigation";
 
 
@@ -29,7 +30,7 @@ function InnerHeader() {
           Life Journal
         </Link>
 
-        <ul className="flex space-x-4">
+        <ul className="flex items-center space-x-4">
           {session ? (
             <>
               <li>
@@ -70,6 +71,23 @@ function InnerHeader() {
                   }`}>
                   Habits
                 </Link>
+              </li>
+              <li className="flex items-center space-x-2">
+                {session.user?.image && (
+                  <Image
+                    src={session.user.image}
+                    alt="Profile"
+                    width={32}
+                    height={32}
+                    className="rounded-full"
+                  />
+                )}
+                <button
+                  onClick={() => signOut()}
+                  className="hover:text-gray-300"
+                >
+                  Sign out
+                </button>
               </li>
             </>
           ) : (
