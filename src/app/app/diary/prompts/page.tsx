@@ -9,16 +9,16 @@ import EditPrompt from "./EditPrompt";
 
 export default async function DiaryPrompts() {
   const session = await getServerSession(authOptions);
-  const email = session?.user?.email;
+  const userId = session?.user?.id;
 
-  if (!email) {
+  if (!userId) {
     return null;
   }
 
   const user = await db
     .select()
     .from(users)
-    .where(eq(users.email, email))
+    .where(eq(users.id, userId))
     .limit(1)
     .execute()
     .then((result) => result[0]);

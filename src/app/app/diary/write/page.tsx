@@ -8,16 +8,16 @@ import AnswerPrompts from "@/components/diary/answer-prompts";
 
 export default async function DiaryWrite() {
   const session = await getServerSession(authOptions);
-  const email = session?.user?.email;
+  const userId = session?.user?.id;
 
-  if (!email || !db) {
+  if (!userId || !db) {
     return null;
   }
 
   const user = await db
     .select()
     .from(users)
-    .where(eq(users.email, email))
+    .where(eq(users.id, userId))
     .limit(1)
     .execute()
     .then((result) => result[0]);

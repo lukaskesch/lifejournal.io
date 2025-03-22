@@ -9,16 +9,17 @@ import { promptAnswer, userPrompt, users } from "@/db/schema";
 
 export default async function DiaryPage() {
   const session = await getServerSession(authOptions);
-  const email = session?.user?.email;
+  const userId = session?.user.id;
+  console.log(session);
 
-  if (!email || !db) {
+  if (!userId || !db) {
     return null;
   }
 
   const user = await db
     .select()
     .from(users)
-    .where(eq(users.email, email))
+    .where(eq(users.id, userId))
     .limit(1)
     .execute()
     .then((result) => result[0]);
