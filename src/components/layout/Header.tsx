@@ -2,8 +2,8 @@
 import React, { Suspense } from "react";
 import Link from "next/link";
 import Avatar from "../ui/Avatar";
-import { useSession, signOut } from "next-auth/react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 
 
 export default function Header() {

@@ -7,7 +7,7 @@ export default function Footer() {
 
   if (pathname?.startsWith("/app")) return null;
   return (
-    <footer className="hidden md:block">
+    <footer>
       <hr />
       <div className="flex justify-between px-4 py-2">
         <div>&copy; Life Journal {new Date().getFullYear()}</div>
