@@ -1,7 +1,7 @@
 "use client";
 import React, { Suspense } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Avatar from "../ui/Avatar";
 import { useSession, signOut } from "next-auth/react";
 import { usePathname, useSearchParams } from "next/navigation";
 
@@ -72,22 +72,14 @@ function InnerHeader() {
                   Habits
                 </Link>
               </li>
-              <li className="flex items-center space-x-2">
-                {session.user?.image && (
-                  <Image
-                    src={session.user.image}
-                    alt="Profile"
-                    width={32}
-                    height={32}
-                    className="rounded-full"
+              <li>
+                <Link href="/app/profile" className="hover:opacity-80">
+                  <Avatar
+                    src={session.user?.image}
+                    name={session.user?.name}
+                    size={32}
                   />
-                )}
-                <button
-                  onClick={() => signOut()}
-                  className="hover:text-gray-300"
-                >
-                  Sign out
-                </button>
+                </Link>
               </li>
             </>
           ) : (

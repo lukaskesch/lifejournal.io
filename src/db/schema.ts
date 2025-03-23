@@ -57,6 +57,7 @@ export const users = mysqlTable("users", {
 	email: varchar({ length: 255 }).notNull(),
 	name: varchar({ length: 255 }),
 	image: varchar({ length: 255 }),
+	createdAt: datetime("created_at", { mode: 'string'}).default(sql`(CURRENT_TIMESTAMP)`),
 },
 (table) => [
 	primaryKey({ columns: [table.id], name: "users_id"}),
