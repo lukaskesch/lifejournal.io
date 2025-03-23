@@ -16,7 +16,9 @@ export default async function Home() {
             Life Journal
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl mb-8 text-gray-100">
-            Journal on your life&apos;s journey by logging your activities, building better habits and journaling.
+            {/* Become your best self */}
+            Build better habits, log your activities and journal on your life&apos;s journey.
+            {/* Journal on your life&apos;s journey by logging your activities, building better habits and journaling. */}
           </p>
           {!session && (
             <Link
