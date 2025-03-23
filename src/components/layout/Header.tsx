@@ -24,7 +24,7 @@ function InnerHeader() {
   };
 
   return (
-    <header className="bg-primary text-white p-4 hidden md:block">
+    <header className={`bg-primary text-white p-4 ${session ? 'hidden md:block' : ''}`}>
       <nav className=" flex justify-between items-center">
         <Link href="/" className="text-xl font-bold">
           Life Journal
