@@ -62,7 +62,7 @@ export default function RootLayout({
           </main>
           <BottomNav />
           <GoogleAnalyticsWrapper />
-          <Footer className="hidden md:block" />
+          <Footer />
         </SessionProvider>
       </body>
     </html>

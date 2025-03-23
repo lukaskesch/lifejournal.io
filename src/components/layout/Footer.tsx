@@ -1,10 +1,13 @@
-interface FooterProps {
-  className?: string;
-}
+"use client";
 
-export default function Footer({ className = "" }: FooterProps) {
+import { usePathname } from "next/navigation";
+
+export default function Footer() {
+  const pathname = usePathname();
+
+  if (pathname?.startsWith("/app")) return null;
   return (
-    <footer className={className}>
+    <footer className="hidden md:block">
       <hr />
       <div className="flex justify-between px-4 py-2">
         <div>&copy; Life Journal {new Date().getFullYear()}</div>
