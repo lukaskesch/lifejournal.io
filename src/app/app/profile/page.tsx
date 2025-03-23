@@ -76,6 +76,14 @@ export default async function Profile() {
         <div className="space-y-4 mt-4">
           <SignOutButton />
         </div>
+        <div className="mt-8 pt-8 border-t border-gray-200">
+          <p className="text-center text-gray-600">
+            Developed with ❤️ and passion by{" "}
+            <a href="https://kesch.dev" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
+              kesch.dev
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );
