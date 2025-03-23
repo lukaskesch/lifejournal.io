@@ -13,10 +13,10 @@ export default async function Home() {
       <div className="bg-gradient-to-b from-primary to-primary/90 text-white py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6">
-            Your Life, Your Journal
+            Life Journal
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl mb-8 text-gray-100">
-            Track your activities, record your thoughts, and build better habits.
+            Journal on your life&apos;s journey by logging your activities, building better habits and journaling.
           </p>
           {!session && (
             <Link
@@ -62,8 +62,7 @@ export default async function Home() {
             Start Your Journey Today
           </h2>
           <p className="text-lg mb-8 text-gray-600">
-            Join thousands of others who are taking control of their personal growth
-            and development.
+            Be the person who takes control of their personal growth and development. Join many others today!
           </p>
           {!session && (
             <Link
