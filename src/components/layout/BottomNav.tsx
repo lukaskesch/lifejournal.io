@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { HomeIcon, ClockIcon, BookOpenIcon, CheckCircleIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import { HomeIcon as HomeIconSolid, ClockIcon as ClockIconSolid, BookOpenIcon as BookOpenIconSolid, CheckCircleIcon as CheckCircleIconSolid, UserCircleIcon as UserCircleIconSolid } from "@heroicons/react/24/solid";
 
@@ -39,7 +40,10 @@ const navItems = [
 ];
 
 export default function BottomNav() {
+  const { data: session } = useSession();
   const pathname = usePathname();
+
+  if (!session) return null;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 md:hidden">
