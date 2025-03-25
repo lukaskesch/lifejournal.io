@@ -65,15 +65,19 @@ export default async function DiaryPage() {
       </Toolbar>
       <div className="flex flex-col gap-8 max-w-xl mx-auto px-2 min-h-screen mt-10">
         {promptAnswersWithPrompts.map((answer) => (
-          <div key={answer.id}>
+          <Link 
+            href={`/app/diary/answer/${answer.id}`} 
+            key={answer.id} 
+            className="block hover:bg-gray-50 rounded-lg p-4 transition-colors"
+          >
             <div className="flex flex-row gap-2 items-center justify-between">
               <div className="font-bold">{answer.prompt?.prompt}</div>
               <div className="text-sm text-gray-500">
                 {new Date(answer.createdAt).toLocaleDateString()}
               </div>
             </div>
-            <div>{answer.answer}</div>
-          </div>
+            <div className="text-gray-600">{answer.answer}</div>
+          </Link>
         ))}
       </div>
     </div>
