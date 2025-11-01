@@ -1,4 +1,4 @@
-import { mysqlTable, mysqlSchema, AnyMySqlColumn, foreignKey, primaryKey, char, text, datetime, varchar, int, unique } from "drizzle-orm/mysql-core"
+import { mysqlTable, mysqlSchema, AnyMySqlColumn, foreignKey, primaryKey, char, text, datetime, varchar, mysqlEnum, int, unique } from "drizzle-orm/mysql-core"
 import { sql } from "drizzle-orm"
 
 export const promptAnswer = mysqlTable("prompt_answer", {
@@ -15,6 +15,7 @@ export const userPrompt = mysqlTable("user_prompt", {
 	id: char({ length: 36 }).notNull(),
 	userId: char("user_id", { length: 36 }).notNull().references(() => users.id),
 	prompt: varchar({ length: 2048 }).notNull(),
+	frequency: mysqlEnum(['daily','weekly','monthly','quarterly','yearly']).default('daily').notNull(),
 	createdAt: datetime("created_at", { mode: 'string'}).default(sql`(CURRENT_TIMESTAMP)`).notNull(),
 },
 (table) => [

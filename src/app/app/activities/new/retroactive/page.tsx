@@ -7,7 +7,7 @@ import {
   userTimeLogHasTag,
   users,
 } from "../../../../../db/schema";
-import { eq } from "drizzle-orm/expressions";
+import { eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 import RetroactiveLoggerClient from "@/components/logging/RetroactiveLoggerClient";
 import { RetroactiveFocusLog } from "@/types/RetroactiveFocusLog";

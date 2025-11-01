@@ -4,7 +4,7 @@ import {
   userTimeLog,
   userTimeLogHasTag,
 } from "@/db/schema";
-import { eq } from "drizzle-orm/expressions";
+import { eq } from "drizzle-orm";
 import {
   addDays,
   differenceInCalendarWeeks,

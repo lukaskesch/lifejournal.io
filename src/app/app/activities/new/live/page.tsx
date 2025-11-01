@@ -7,7 +7,7 @@ import {
   userTimeLogHasTag,
   users,
 } from "../../../../../db/schema";
-import { eq } from "drizzle-orm/expressions";
+import { eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 import LiveTimeLoggerClient from "@/components/logging/LiveTimeLoggerClient";
 import { headers } from "next/headers";

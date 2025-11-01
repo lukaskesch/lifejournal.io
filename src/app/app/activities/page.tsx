@@ -7,7 +7,7 @@ import {
   userTimeLogHasTag,
   users,
 } from "@/db/schema";
-import { eq } from "drizzle-orm/expressions";
+import { eq } from "drizzle-orm";
 import { FocusLogWithTags } from "@/types/FocusLogWithTags";
 import LogListClient from "@/components/logs/LogListClient";
 import { getServerSession } from "next-auth";
