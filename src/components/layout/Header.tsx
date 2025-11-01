@@ -5,7 +5,6 @@ import Avatar from "../ui/Avatar";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 
-
 export default function Header() {
   return (
     <Suspense fallback={null}>
@@ -24,7 +23,10 @@ function InnerHeader() {
   };
 
   return (
-    <header className={`bg-primary text-white p-4 ${session ? 'hidden md:block' : ''}`}>
+    <header
+      className={`bg-primary text-white p-4 ${
+        session ? "hidden md:block" : ""
+      }`}>
       <nav className=" flex justify-between items-center">
         <Link href="/" className="text-xl font-bold">
           Life Journal
@@ -52,6 +54,17 @@ function InnerHeader() {
               </li>
               <li>
                 <Link
+                  href="/app/habits"
+                  className={`hover:text-gray-300 ${
+                    getIsSectionActive("/app/habits")
+                      ? "underline underline-offset-2"
+                      : ""
+                  }`}>
+                  Habits
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/app/diary"
                   className={`hover:text-gray-300 ${
                     getIsSectionActive("/app/diary")
@@ -63,13 +76,13 @@ function InnerHeader() {
               </li>
               <li>
                 <Link
-                  href="/app/habits"
+                  href="/app/knowledge"
                   className={`hover:text-gray-300 ${
-                    getIsSectionActive("/app/habits")
+                    getIsSectionActive("/app/knowledge")
                       ? "underline underline-offset-2"
                       : ""
                   }`}>
-                  Habits
+                  Knowledge
                 </Link>
               </li>
               <li>
