@@ -1,12 +1,39 @@
 import { relations } from "drizzle-orm/relations";
-import { users, habit, habitCheck, userPrompt, promptAnswer, userTags, userTimeLog, userTimeLogHasTag } from "../src/db/schema";
+import { userTags, habit, users, habitCheck, userPrompt, promptAnswer, userTimeLog, userTimeLogHasTag } from "../src/db/schema";
 
 export const habitRelations = relations(habit, ({one, many}) => ({
+	userTag: one(userTags, {
+		fields: [habit.tagId],
+		references: [userTags.id]
+	}),
 	user: one(users, {
 		fields: [habit.userId],
 		references: [users.id]
 	}),
 	habitChecks: many(habitCheck),
+}));
+
+export const userTagsRelations = relations(userTags, ({one, many}) => ({
+	habits: many(habit),
+	user_userId: one(users, {
+		fields: [userTags.userId],
+		references: [users.id],
+		relationName: "userTags_userId_users_id"
+	}),
+	user_userId: one(users, {
+		fields: [userTags.userId],
+		references: [users.id],
+		relationName: "userTags_userId_users_id"
+	}),
+	userTimeLogHasTags_tagId: many(userTimeLogHasTag, {
+		relationName: "userTimeLogHasTag_tagId_userTags_id"
+	}),
+	userTimeLogHasTags_tagId: many(userTimeLogHasTag, {
+		relationName: "userTimeLogHasTag_tagId_userTags_id"
+	}),
+	userTimeLogHasTags_tagId: many(userTimeLogHasTag, {
+		relationName: "userTimeLogHasTag_tagId_userTags_id"
+	}),
 }));
 
 export const usersRelations = relations(users, ({many}) => ({
@@ -45,28 +72,6 @@ export const userPromptRelations = relations(userPrompt, ({one, many}) => ({
 	user: one(users, {
 		fields: [userPrompt.userId],
 		references: [users.id]
-	}),
-}));
-
-export const userTagsRelations = relations(userTags, ({one, many}) => ({
-	user_userId: one(users, {
-		fields: [userTags.userId],
-		references: [users.id],
-		relationName: "userTags_userId_users_id"
-	}),
-	user_userId: one(users, {
-		fields: [userTags.userId],
-		references: [users.id],
-		relationName: "userTags_userId_users_id"
-	}),
-	userTimeLogHasTags_tagId: many(userTimeLogHasTag, {
-		relationName: "userTimeLogHasTag_tagId_userTags_id"
-	}),
-	userTimeLogHasTags_tagId: many(userTimeLogHasTag, {
-		relationName: "userTimeLogHasTag_tagId_userTags_id"
-	}),
-	userTimeLogHasTags_tagId: many(userTimeLogHasTag, {
-		relationName: "userTimeLogHasTag_tagId_userTags_id"
 	}),
 }));
 

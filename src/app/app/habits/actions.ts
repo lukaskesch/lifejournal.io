@@ -3,7 +3,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { eq, and } from "drizzle-orm";
-import { users, habit, habitCheck } from "@/db/schema";
+import { users, habit, habitCheck, userTags } from "@/db/schema";
 import db from "@/db";
 import { v4 as uuidv4 } from 'uuid';
 import { revalidatePath } from "next/cache";
@@ -35,12 +35,30 @@ async function getUserFromSession() {
   return user;
 }
 
+export async function getUserTags() {
+  const user = await getUserFromSession();
+
+  if (!db) {
+    throw new Error("Database not initialized");
+  }
+
+  const tags = await db
+    .select()
+    .from(userTags)
+    .where(eq(userTags.userId, user.id))
+    .execute();
+
+  // Sort tags alphabetically by name
+  return tags.sort((a, b) => a.name.localeCompare(b.name));
+}
+
 export async function createHabit(data: {
   name: string;
   description?: string;
   periodUnit: 'day' | 'week' | 'month';
   targetCount: number;
   daysOfWeekMask?: number;
+  tagId?: string;
 }) {
   if (!data.name.trim()) {
     throw new Error("Habit name is required");
@@ -52,9 +70,25 @@ export async function createHabit(data: {
     throw new Error("Database not initialized");
   }
 
+  // Verify tag ownership if tagId is provided
+  if (data.tagId) {
+    const tag = await db
+      .select()
+      .from(userTags)
+      .where(and(eq(userTags.id, data.tagId), eq(userTags.userId, user.id)))
+      .limit(1)
+      .execute()
+      .then((result) => result[0]);
+
+    if (!tag) {
+      throw new Error("Tag not found or unauthorized");
+    }
+  }
+
   await db.insert(habit).values({
     id: uuidv4(),
     userId: user.id,
+    tagId: data.tagId || null,
     name: data.name.trim(),
     description: data.description?.trim() || null,
     periodUnit: data.periodUnit,

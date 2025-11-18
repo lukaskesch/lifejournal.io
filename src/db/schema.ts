@@ -4,6 +4,7 @@ import { sql } from "drizzle-orm"
 export const habit = mysqlTable("habit", {
 	id: char({ length: 36 }).notNull(),
 	userId: char("user_id", { length: 36 }).notNull().references(() => users.id),
+	tagId: char("tag_id", { length: 36 }).references(() => userTags.id, { onDelete: "set null" } ),
 	name: varchar({ length: 255 }).notNull(),
 	description: text(),
 	periodUnit: mysqlEnum("period_unit", ['day','week','month']).default('day').notNull(),
@@ -12,6 +13,7 @@ export const habit = mysqlTable("habit", {
 	createdAt: datetime("created_at", { mode: 'string'}).default(sql`(CURRENT_TIMESTAMP)`).notNull(),
 },
 (table) => [
+	index("habit_tag_idx").on(table.tagId),
 	index("habit_user_idx").on(table.userId),
 	primaryKey({ columns: [table.id], name: "habit_id"}),
 ]);

@@ -12,7 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createHabit } from "../actions";
+import { createHabit, getUserTags } from "../actions";
+import { UserTagSelect } from "@/types/database-types";
 
 export default function NewHabitPage() {
   const router = useRouter();
@@ -20,7 +21,10 @@ export default function NewHabitPage() {
   const [description, setDescription] = React.useState("");
   const [periodUnit, setPeriodUnit] = React.useState<"day" | "week" | "month">("day");
   const [targetCount, setTargetCount] = React.useState(1);
+  const [tagId, setTagId] = React.useState<string>("");
+  const [tags, setTags] = React.useState<UserTagSelect[]>([]);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isLoadingTags, setIsLoadingTags] = React.useState(true);
 
   React.useEffect(() => {
     const callbackUrl = decodeURIComponent(
@@ -29,6 +33,20 @@ export default function NewHabitPage() {
     if (callbackUrl) {
       // Store callback URL for after creation
     }
+  }, []);
+
+  React.useEffect(() => {
+    async function loadTags() {
+      try {
+        const userTags = await getUserTags();
+        setTags(userTags);
+      } catch (error) {
+        console.error("Error loading tags:", error);
+      } finally {
+        setIsLoadingTags(false);
+      }
+    }
+    loadTags();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -42,6 +60,7 @@ export default function NewHabitPage() {
         description: description.trim() || undefined,
         periodUnit,
         targetCount,
+        tagId: tagId || undefined,
       });
       
       // Get callback URL from query params
@@ -88,6 +107,29 @@ export default function NewHabitPage() {
               disabled={isSubmitting}
               rows={3}
             />
+          </div>
+
+          <div>
+            <label htmlFor="tag" className="block text-sm font-medium mb-2">
+              Activity Tag (optional)
+            </label>
+            <Select
+              value={tagId || "none"}
+              onValueChange={(value) => setTagId(value === "none" ? "" : value)}
+              disabled={isSubmitting || isLoadingTags}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder={isLoadingTags ? "Loading tags..." : "Select a tag"} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">None</SelectItem>
+                {tags.map((tag) => (
+                  <SelectItem key={tag.id} value={tag.id}>
+                    {tag.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
