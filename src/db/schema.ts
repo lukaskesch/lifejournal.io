@@ -1,5 +1,32 @@
-import { mysqlTable, mysqlSchema, AnyMySqlColumn, foreignKey, primaryKey, char, text, datetime, varchar, mysqlEnum, int, unique } from "drizzle-orm/mysql-core"
+import { mysqlTable, mysqlSchema, AnyMySqlColumn, index, foreignKey, primaryKey, char, varchar, text, mysqlEnum, int, tinyint, datetime, date, unique } from "drizzle-orm/mysql-core"
 import { sql } from "drizzle-orm"
+
+export const habit = mysqlTable("habit", {
+	id: char({ length: 36 }).notNull(),
+	userId: char("user_id", { length: 36 }).notNull().references(() => users.id),
+	name: varchar({ length: 255 }).notNull(),
+	description: text(),
+	periodUnit: mysqlEnum("period_unit", ['day','week','month']).default('day').notNull(),
+	targetCount: int("target_count").default(1).notNull(),
+	daysOfWeekMask: tinyint("days_of_week_mask", { unsigned: true }),
+	createdAt: datetime("created_at", { mode: 'string'}).default(sql`(CURRENT_TIMESTAMP)`).notNull(),
+},
+(table) => [
+	index("habit_user_idx").on(table.userId),
+	primaryKey({ columns: [table.id], name: "habit_id"}),
+]);
+
+export const habitCheck = mysqlTable("habit_check", {
+	id: char({ length: 36 }).notNull(),
+	habitId: char("habit_id", { length: 36 }).notNull().references(() => habit.id, { onDelete: "cascade" } ),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	datetime: date({ mode: 'string' }).notNull(),
+	note: text(),
+	createdAt: datetime("created_at", { mode: 'string'}).default(sql`(CURRENT_TIMESTAMP)`).notNull(),
+},
+(table) => [
+	index("habit_check_habit_idx").on(table.habitId),
+]);
 
 export const promptAnswer = mysqlTable("prompt_answer", {
 	id: char({ length: 36 }).notNull(),

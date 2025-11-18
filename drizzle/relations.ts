@@ -1,5 +1,37 @@
 import { relations } from "drizzle-orm/relations";
-import { userPrompt, promptAnswer, users, userTags, userTimeLog, userTimeLogHasTag } from "../src/db/schema";
+import { users, habit, habitCheck, userPrompt, promptAnswer, userTags, userTimeLog, userTimeLogHasTag } from "../src/db/schema";
+
+export const habitRelations = relations(habit, ({one, many}) => ({
+	user: one(users, {
+		fields: [habit.userId],
+		references: [users.id]
+	}),
+	habitChecks: many(habitCheck),
+}));
+
+export const usersRelations = relations(users, ({many}) => ({
+	habits: many(habit),
+	userPrompts: many(userPrompt),
+	userTags_userId: many(userTags, {
+		relationName: "userTags_userId_users_id"
+	}),
+	userTags_userId: many(userTags, {
+		relationName: "userTags_userId_users_id"
+	}),
+	userTimeLogs_userId: many(userTimeLog, {
+		relationName: "userTimeLog_userId_users_id"
+	}),
+	userTimeLogs_userId: many(userTimeLog, {
+		relationName: "userTimeLog_userId_users_id"
+	}),
+}));
+
+export const habitCheckRelations = relations(habitCheck, ({one}) => ({
+	habit: one(habit, {
+		fields: [habitCheck.habitId],
+		references: [habit.id]
+	}),
+}));
 
 export const promptAnswerRelations = relations(promptAnswer, ({one}) => ({
 	userPrompt: one(userPrompt, {
@@ -13,22 +45,6 @@ export const userPromptRelations = relations(userPrompt, ({one, many}) => ({
 	user: one(users, {
 		fields: [userPrompt.userId],
 		references: [users.id]
-	}),
-}));
-
-export const usersRelations = relations(users, ({many}) => ({
-	userPrompts: many(userPrompt),
-	userTags_userId: many(userTags, {
-		relationName: "userTags_userId_users_id"
-	}),
-	userTags_userId: many(userTags, {
-		relationName: "userTags_userId_users_id"
-	}),
-	userTimeLogs_userId: many(userTimeLog, {
-		relationName: "userTimeLog_userId_users_id"
-	}),
-	userTimeLogs_userId: many(userTimeLog, {
-		relationName: "userTimeLog_userId_users_id"
 	}),
 }));
 

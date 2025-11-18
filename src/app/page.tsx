@@ -1,11 +1,10 @@
-
+"use client";
 import Link from "next/link";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions";
 import FeatureCard from "@/components/ui/FeatureCard";
+import { useSession } from "next-auth/react";
 
-export default async function Home() {
-  const session = await getServerSession(authOptions);
+export default function Home() {
+  const { data: session, status } = useSession();
 
   return (
     <main className="min-h-screen">
@@ -20,14 +19,14 @@ export default async function Home() {
             Build better habits, log your activities and journal on your life&apos;s journey.
             {/* Journal on your life&apos;s journey by logging your activities, building better habits and journaling. */}
           </p>
-          {!session && (
+          {/* {!session && (
             <Link
               href="/api/auth/signin"
               className="bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors inline-block"
             >
               Get Started
             </Link>
-          )}
+          )} */}
         </div>
       </div>
 
