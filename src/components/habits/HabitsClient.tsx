@@ -26,7 +26,7 @@ export default function HabitsClient({
   };
 
   return (
-    <div className="flex flex-col min-h-screen m-2">
+    <div className="flex flex-col m-2">
       <Toolbar>
         <div className="flex flex-row justify-between gap-3">
           <div className="">Habits: #{habits.length}</div>

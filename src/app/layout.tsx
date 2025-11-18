@@ -7,17 +7,6 @@ import Footer from "@/components/layout/Footer";
 import { SessionProvider } from "@/components/SessionProvider";
 import GoogleAnalyticsWrapper from "@/components/GoogleAnalyticsWrapper";
 
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
-} from "@/components/ui/navigation-menu";
-
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -57,7 +46,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <SessionProvider>
           <Header />
-          <main className="min-h-screen pb-20 md:pb-0">
+          <main className="min-h-fit pb-20 md:pb-0">
             {children}
           </main>
           <BottomNav />
