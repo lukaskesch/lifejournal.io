@@ -3,7 +3,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { eq, and } from "drizzle-orm";
-import { users, habit } from "@/db/schema";
+import { users, habit, habitCheck } from "@/db/schema";
 import db from "@/db";
 import { v4 as uuidv4 } from 'uuid';
 import { revalidatePath } from "next/cache";
@@ -63,6 +63,7 @@ export async function createHabit(data: {
   });
 
   revalidatePath('/app/habits');
+  revalidatePath('/app/habits/manage');
 }
 
 async function verifyHabitOwnership(habitId: string, userId: string) {
@@ -105,6 +106,7 @@ export async function deleteHabit(habitId: string) {
     .execute();
 
   revalidatePath('/app/habits');
+  revalidatePath('/app/habits/manage');
 }
 
 export async function updateHabit(habitId: string, data: {
@@ -139,5 +141,27 @@ export async function updateHabit(habitId: string, data: {
     .execute();
 
   revalidatePath('/app/habits');
+  revalidatePath('/app/habits/manage');
+}
+
+export async function checkHabit(habitId: string, date?: string) {
+  const user = await getUserFromSession();
+
+  if (!db) {
+    throw new Error("Database not initialized");
+  }
+
+  await verifyHabitOwnership(habitId, user.id);
+
+  const checkDate = date || new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
+
+  await db.insert(habitCheck).values({
+    id: uuidv4(),
+    habitId: habitId,
+    datetime: checkDate,
+  });
+
+  revalidatePath('/app/habits');
+  revalidatePath('/app/habits/manage');
 }
 

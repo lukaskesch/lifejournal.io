@@ -6,10 +6,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Toolbar from "@/components/layout/toolbar";
 import { Button } from "@/components/ui/button";
-import { deleteHabit } from "@/app/app/habits/actions";
+import { checkHabit } from "@/app/app/habits/actions";
 import { useRouter } from "next/navigation";
 
-export default function HabitsClient({
+export default function DueHabitsClient({
   habits,
 }: {
   habits: HabitSelect[];
@@ -18,22 +18,20 @@ export default function HabitsClient({
   const router = useRouter();
   const currentUrl = pathname;
 
-  const handleDelete = async (habitId: string) => {
-    if (confirm("Are you sure you want to delete this habit?")) {
-      await deleteHabit(habitId);
-      router.refresh();
-    }
+  const handleCheck = async (habitId: string) => {
+    await checkHabit(habitId);
+    router.refresh();
   };
 
   return (
     <div className="flex flex-col min-h-screen m-2">
       <Toolbar>
         <div className="flex flex-row justify-between gap-3">
-          <div className="">Habits: #{habits.length}</div>
+          <div className="">Due Habits: #{habits.length}</div>
         </div>
         <div className="flex flex-row gap-4 items-center">
-          <Link href="/app/habits" className="hover:text-gray-300">
-            View Due Habits
+          <Link href="/app/habits/manage" className="hover:text-gray-300">
+            Manage Habits
           </Link>
           <Link
             href={`/app/habits/new?callbackUrl=${encodeURIComponent(
@@ -47,11 +45,11 @@ export default function HabitsClient({
       <div className="grid gap-4 m-2">
         {habits.length === 0 ? (
           <div className="text-center text-gray-500 py-8">
-            No habits yet. Create your first habit to get started!
+            All caught up! No habits due right now.
           </div>
         ) : (
           habits.map((habit) => (
-            <HabitCard key={habit.id} habit={habit} onDelete={handleDelete} />
+            <DueHabitCard key={habit.id} habit={habit} onCheck={handleCheck} />
           ))
         )}
       </div>
@@ -59,24 +57,15 @@ export default function HabitsClient({
   );
 }
 
-function HabitCard({
+function DueHabitCard({
   habit,
-  onDelete,
+  onCheck,
 }: {
   habit: HabitSelect;
-  onDelete: (habitId: string) => void;
+  onCheck: (habitId: string) => void;
 }) {
   function formatPeriodUnit(unit: string): string {
     return unit.charAt(0).toUpperCase() + unit.slice(1);
-  }
-
-  function formatCreatedDate(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
   }
 
   return (
@@ -87,21 +76,16 @@ function HabitCard({
           {habit.description && (
             <div className="text-gray-700 mb-2">{habit.description}</div>
           )}
-          <div className="flex flex-row gap-4 text-sm text-gray-600">
-            <span>
-              Target: {habit.targetCount} per {formatPeriodUnit(habit.periodUnit)}
-            </span>
-            <span>Created: {formatCreatedDate(habit.createdAt)}</span>
+          <div className="text-sm text-gray-600">
+            Target: {habit.targetCount} per {formatPeriodUnit(habit.periodUnit)}
           </div>
         </div>
         <div className="flex flex-row gap-2">
           <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onDelete(habit.id)}
-            className="text-red-600 hover:text-red-700"
+            onClick={() => onCheck(habit.id)}
+            className="bg-green-600 hover:bg-green-700"
           >
-            Delete
+            Check Off
           </Button>
         </div>
       </div>
